@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-credit-card-table" author="Grisha">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="agro_trade" tableName="credit_card"/>
+            </not>
+        </preConditions>
+
+        <createTable schemaName="agro_trade" tableName="credit_card">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="token" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="card_holder_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="masked_number" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="expiry_date" type="varchar(7)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableSchemaName="agro_trade"
+                baseTableName="credit_card"
+                baseColumnNames="user_id"
+                constraintName="fk_credit_card_user"
+                referencedTableSchemaName="agro_trade"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="credit-card-table-rollback" author="Grisha Grigoryan">
+        <rollback>
+            <dropTable
+                    tableName="credit_card"
+                    schemaName="agro_trade"
+                    cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
