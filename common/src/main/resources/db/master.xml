@@ -9,5 +9,8 @@
     <include file="/db/changelog/003-create-product-table.xml"/>
     <include file="/db/changelog/004-create-order-table.xml"/>
     <include file="/db/changelog/005-create-banking-request-table.xml"/>
+    <include file="/db/changelog/006-create-credit-card-table.xml"/>
+    <include file="/db/changelog/007-creat-news-table.xml"/>
+    <include file="/db/changelog/008-create-passport-table.xml"/>
 
 </databaseChangeLog>
