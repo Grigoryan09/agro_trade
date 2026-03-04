@@ -44,8 +44,6 @@
             <column name="active" type="bool" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
-            <column name="in_name" type="varchar(100)"/>
-            <column name="in_license_number" type="varchar(100)"/>
             <column name="birth_date" type="date"/>
             <column name="address" type="varchar(255)"/>
         </createTable>

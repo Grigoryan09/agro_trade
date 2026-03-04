@@ -41,6 +41,7 @@
         <addForeignKeyConstraint
                 baseColumnNames="seller_id"
                 baseTableName="product"
+                baseTableSchemaName="agro_trade"
                 constraintName="fk_product_user"
                 referencedTableName="user"
                 referencedColumnNames="id"
