@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="1-create-credit-card-table" author="Grisha">
+    <changeSet id="create-credit-card-table" author="Grisha">
 
         <preConditions onFail="MARK_RAN">
             <not>
@@ -51,13 +51,15 @@
                 referencedTableName="user"
                 referencedColumnNames="id"
                 onDelete="CASCADE"/>
+    </changeSet>
 
+    <changeSet id="credit-card-table-rollback" author="Grisha Grigoryan">
         <rollback>
-            <dropTable schemaName="agro_trade"
-                       tableName="credit_card"
-                       cascadeConstraints="true"/>
+            <dropTable
+                    tableName="credit_card"
+                    schemaName="agro_trade"
+                    cascadeConstraints="true"/>
         </rollback>
-
     </changeSet>
 
 </databaseChangeLog>

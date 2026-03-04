@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="1-create-passport-table" author="Grisha">
+    <changeSet id="create-passport-table" author="Grisha">
 
         <preConditions onFail="MARK_RAN">
             <not>
@@ -49,11 +49,14 @@
                 referencedColumnNames="id"
                 onDelete="CASCADE"/>
 
-        <rollback>
-            <dropTable schemaName="agro_trade"
-                       tableName="passport"
-                       cascadeConstraints="true"/>
-        </rollback>
+    </changeSet>
 
+    <changeSet id="passport-table-rollback" author="Grisha Grigoryan">
+        <rollback>
+            <dropTable
+                    tableName="passport"
+                    schemaName="agro_trade"
+                    cascadeConstraints="true"/>
+        </rollback>
     </changeSet>
 </databaseChangeLog>
