@@ -2,7 +2,7 @@ spring:
   application:
     name: web
   datasource:
-    url: jdbc:postgresql://localhost:5432/web
+    url: jdbc:postgresql://localhost:5432/postgres
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
   jpa:
@@ -10,6 +10,9 @@ spring:
     hibernate:
       ddl-auto: none
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        default_schema: agro_trade
   liquibase:
     enabled: true
     change-log: classpath:db/master.xml
