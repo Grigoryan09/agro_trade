@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="1-create-order-table" author="Artash Shaghoyan">
+    <changeSet id="create-order-table" author="Artash Shaghoyan">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="order" schemaName="agro_trade"/>
@@ -78,7 +78,7 @@
                 onDelete="CASCADE"/>
     </changeSet>
 
-    <changeSet id="2-order-table-rollback" author="Artash Shaghoyan">
+    <changeSet id="order-table-rollback" author="Artash Shaghoyan">
         <rollback>
             <dropTable
                     tableName="order"

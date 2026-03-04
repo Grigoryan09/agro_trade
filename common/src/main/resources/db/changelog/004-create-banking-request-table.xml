@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="1-create-banking-request-table" author="Artash Shaghoyan">
+    <changeSet id="create-banking-request-table" author="Artash Shaghoyan">
 
         <preConditions onFail="MARK_RAN">
             <not>
@@ -61,7 +61,7 @@
                 onDelete="CASCADE"/>
     </changeSet>
 
-    <changeSet id="2-banking-request-table-rollback" author="Artash Shaghoyan">
+    <changeSet id="banking-request-table-rollback" author="Artash Shaghoyan">
         <rollback>
             <dropTable
                     tableName="banking_request"

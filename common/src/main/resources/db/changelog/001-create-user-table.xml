@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="1-create-user-table" author="Artash Shaghoyan">
+    <changeSet id="create-user-table" author="Artash Shaghoyan">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="user" schemaName="agro_trade"/>
@@ -51,7 +51,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2-user-table-rollback" author="Artash Shaghoyan">
+    <changeSet id="user-table-rollback" author="Artash Shaghoyan">
         <rollback>
             <dropTable
                     tableName="user"
