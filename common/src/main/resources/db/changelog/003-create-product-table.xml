@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1-create-product-table" author="Artash Shaghoyan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="product" schemaName="agro_trade"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="product" schemaName="agro_trade">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="numeric(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_status" type="varchar(50)" defaultValue="AVAILABLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_at" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="seller_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseColumnNames="seller_id"
+                baseTableName="product"
+                constraintName="fk_product_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                referencedTableSchemaName="agro_trade"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="2-product-table-rollback" author="Artash Shaghoyan">
+        <rollback>
+            <dropTable
+                    tableName="product"
+                    schemaName="agro_trade"
+                    cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

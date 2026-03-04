@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1-create-user-table" author="Artash Shaghoyan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user" schemaName="agro_trade"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="user" schemaName="agro_trade">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="surname" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="gender" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="varchar(20)" defaultValue="BUYER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="varchar(100)"/>
+            <column name="active" type="bool" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="in_name" type="varchar(100)"/>
+            <column name="in_license_number" type="varchar(100)"/>
+            <column name="birth_date" type="date"/>
+            <column name="address" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2-user-table-rollback" author="Artash Shaghoyan">
+        <rollback>
+            <dropTable
+                    tableName="user"
+                    schemaName="agro_trade"
+                    cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1-create-banking-request-table" author="Artash Shaghoyan">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="banking_request" schemaName="agro_trade"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="banking_request" schemaName="agro_trade">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="purpose" type="varchar(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="credit_amoute" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="int8">
+                <constraints nullable="true"/>
+            </column>
+            <column name="purpose" type="varchar(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="request_status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="repayment_period" type="int4">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseColumnNames="user_id"
+                baseTableName="banking_request"
+                constraintName="fk_banking_request_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                referencedTableSchemaName="agro_trade"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseColumnNames="product_id"
+                baseTableName="banking_request"
+                constraintName="fk_banking_request_product"
+                referencedTableName="product"
+                referencedColumnNames="id"
+                referencedTableSchemaName="agro_trade"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="2-banking-request-table-rollback" author="Artash Shaghoyan">
+        <rollback>
+            <dropTable
+                    tableName="banking_request"
+                    schemaName="agro_trade"
+                    cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
