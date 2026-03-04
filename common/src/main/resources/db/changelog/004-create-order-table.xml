@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-order-table" author="Artash Shaghoyan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="order" schemaName="agro_trade"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="order" schemaName="agro_trade">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="buyer_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="seller_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="manager_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_price" type="numeric(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="chat_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseColumnNames="buyer_id"
+                baseTableName="order"
+                baseTableSchemaName="agro_trade"
+                constraintName="fk_order_buyer"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                referencedTableSchemaName="agro_trade"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseColumnNames="manager_id"
+                baseTableName="order"
+                baseTableSchemaName="agro_trade"
+                constraintName="fk_order_manager"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                referencedTableSchemaName="agro_trade"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseColumnNames="product_id"
+                baseTableName="order"
+                baseTableSchemaName="agro_trade"
+                constraintName="fk_order_product"
+                referencedTableName="product"
+                referencedColumnNames="id"
+                referencedTableSchemaName="agro_trade"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseColumnNames="seller_id"
+                baseTableName="order"
+                constraintName="fk_order_seller"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                referencedTableSchemaName="agro_trade"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="order-table-rollback" author="Artash Shaghoyan">
+        <rollback>
+            <dropTable
+                    tableName="order"
+                    schemaName="agro_trade"
+                    cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
