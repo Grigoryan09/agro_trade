@@ -28,7 +28,7 @@
             <column name="file_path" type="text">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_ad" type="TIMESTAMP WITH TIME ZONE">
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
                 <constraints nullable="false"/>
             </column>
         </createTable>
