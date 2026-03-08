@@ -29,8 +29,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="create_at" type="timestamp"
-                    defaultValueComputed="CURRENT_TIMESTAMP">
+            <column name="create_at" type="timestamp">
                 <constraints nullable="false"/>
             </column>
         </createTable>

@@ -40,7 +40,7 @@
                 baseColumnNames="user_id"
                 baseTableName="organization"
                 baseTableSchemaName="agro_trade"
-                constraintName="fk_banking_request_user"
+                constraintName="fk_organization_user"
                 referencedTableName="user"
                 referencedColumnNames="id"
                 referencedTableSchemaName="agro_trade"

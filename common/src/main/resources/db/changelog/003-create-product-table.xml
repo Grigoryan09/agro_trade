@@ -30,7 +30,7 @@
             <column name="product_status" type="varchar(50)" defaultValue="AVAILABLE">
                 <constraints nullable="false"/>
             </column>
-            <column name="create_at" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP">
+            <column name="create_at" type="timestamp">
                 <constraints nullable="false"/>
             </column>
             <column name="seller_id" type="int8">

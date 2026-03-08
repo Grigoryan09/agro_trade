@@ -37,7 +37,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="created_at" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+            <column name="created_at" type="timestamp">
                 <constraints nullable="false"/>
             </column>
         </createTable>
