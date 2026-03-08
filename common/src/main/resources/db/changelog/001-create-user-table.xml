@@ -40,12 +40,21 @@
             <column name="phone_number" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="token" type="varchar(100)"/>
+            <column name="token" type="varchar(100)">
+                <constraints nullable="true"/>
+            </column>
             <column name="active" type="bool" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
-            <column name="birth_date" type="date"/>
-            <column name="address" type="varchar(255)"/>
+            <column name="birth_date" type="date">
+                <constraints nullable="true"/>
+            </column>
+            <column name="address" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="document_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
         </createTable>
     </changeSet>
 
