@@ -1,5 +1,7 @@
 package am.agrotrade.service;
 
+import am.agrotrade.dto.user.response.AuthResponse;
+import am.agrotrade.dto.user.response.UserResponse;
 import am.agrotrade.model.User;
 
 import java.util.List;
@@ -11,7 +13,7 @@ public interface UserService {
 
     void delete(long userId);
 
-    List<User> findAll();
+    List<UserResponse> findAll();
 
-    Optional<User> findById(long userId);
+    Optional<AuthResponse> findById(long userId);
 }
