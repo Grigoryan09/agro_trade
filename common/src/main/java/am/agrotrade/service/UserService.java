@@ -15,5 +15,5 @@ public interface UserService {
 
     List<UserResponse> findAll();
 
-    Optional<AuthResponse> findById(long userId);
+    AuthResponse findById(long userId);
 }
