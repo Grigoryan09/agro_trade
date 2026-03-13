@@ -1,17 +1,18 @@
 package am.agrotrade.service;
 
-import am.agrotrade.model.BankingRequest;
+import am.agrotrade.dto.bankingRequest.request.CreateBankingRequest;
+import am.agrotrade.dto.bankingRequest.response.BaseInfoBankingRequestDto;
 
+import java.awt.print.Pageable;
 import java.util.List;
-import java.util.Optional;
 
 public interface BankingRequestService {
 
-    void save(BankingRequest bankingRequest);
+    void save(CreateBankingRequest bankingRequest);
 
     void delete(long bankingRequestId);
 
-    List<BankingRequest> findAll();
+    List<BaseInfoBankingRequestDto> findAll(Pageable pageable);
 
-    Optional<BankingRequest> findById(long bankingRequestId);
+    BaseInfoBankingRequestDto findById(long bankingRequestId);
 }

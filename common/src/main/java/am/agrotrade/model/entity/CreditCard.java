@@ -1,11 +1,11 @@
-package am.agrotrade.model;
+package am.agrotrade.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -23,11 +23,13 @@ public class CreditCard {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String token;
+    private String encryptedNumber;
+
+    private String last4Digits;
+
+    private BigDecimal balance;
 
     private String cardHolderName;
-
-    private String maskedNumber;
 
     private String expiryDate;
 

@@ -1,18 +1,25 @@
 package am.agrotrade.service;
 
-import am.agrotrade.dto.user.response.AuthResponse;
-import am.agrotrade.dto.user.response.UserResponse;
-import am.agrotrade.model.User;
+import am.agrotrade.dto.user.request.AuthUserRequest;
+import am.agrotrade.dto.user.response.AuthUserResponse;
+import am.agrotrade.dto.user.response.BaseUserInfoDto;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 public interface UserService {
 
-    void save(User user);
+    void save(AuthUserRequest authUserRequest);
 
     void delete(long userId);
 
-    List<UserResponse> findAll();
+    List<BaseUserInfoDto> findAll(Pageable pageable);
 
-    AuthResponse findById(long userId);
+    AuthUserResponse findById(long userId);
+
+    long findUserIdByRole(String role);
+
+
+
+
 }

@@ -1,17 +1,22 @@
 package am.agrotrade.service;
 
-import am.agrotrade.model.Product;
+import am.agrotrade.dto.product.request.CreateProductRequest;
+import am.agrotrade.dto.product.response.BaseProductInfoDto;
 
+import java.awt.print.Pageable;
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductService {
 
-    void save(Product product);
+    void save(CreateProductRequest product);
 
     void delete(long productId);
 
-    List<Product> findAll();
+    List<BaseProductInfoDto> findAll(Pageable pageable);
 
-    Optional<Product> findById(long productId);
+    BaseProductInfoDto findById(long productId);
+
+    BaseProductInfoDto findProductBySellerId(long sellerId,  Pageable pageable);
+
+
 }

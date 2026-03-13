@@ -1,4 +1,4 @@
-package am.agrotrade.model;
+package am.agrotrade.model.entity;
 
 import am.agrotrade.model.enums.OrderStatus;
 import jakarta.persistence.*;

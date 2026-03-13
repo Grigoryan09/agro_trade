@@ -1,17 +1,11 @@
 package am.agrotrade.service;
 
-import am.agrotrade.model.Passport;
-
-import java.util.List;
-import java.util.Optional;
+import am.agrotrade.dto.passport.request.CreatePassportRequest;
 
 public interface PassportService {
 
-    void save(Passport passport);
+    void save(CreatePassportRequest createPassportRequest);
 
-    void delete(long passportId);
+    boolean existsPassportByUserId(long userId);
 
-    List<Passport> findAll();
-
-    Optional<Passport> findById(long passportId);
 }

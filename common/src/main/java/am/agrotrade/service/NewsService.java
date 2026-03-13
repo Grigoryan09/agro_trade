@@ -1,17 +1,20 @@
 package am.agrotrade.service;
 
-import am.agrotrade.model.News;
+import am.agrotrade.dto.news.request.CreateNewsRequest;
+import am.agrotrade.dto.news.response.BaseNewsInfoDto;
 
+import java.awt.print.Pageable;
 import java.util.List;
-import java.util.Optional;
 
 public interface NewsService {
 
-    void save(News news);
+    void save(CreateNewsRequest news);
 
     void delete(long newsId);
 
-    List<News> findAll();
+    List<BaseNewsInfoDto> findAll(Pageable pageable);
 
-    Optional<News> findById(long newsId);
+    BaseNewsInfoDto findById(long newsId);
+
+    List<BaseNewsInfoDto> findByAuthorId(long authorId, Pageable pageable);
 }

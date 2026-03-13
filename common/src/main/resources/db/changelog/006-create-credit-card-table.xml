@@ -20,23 +20,21 @@
             <column name="user_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-
-            <column name="token" type="varchar(255)">
+            <column name="encrypted_number" type="varchar()">
                 <constraints nullable="false"/>
             </column>
-
+            <column name="last_4_digits" type="varchar(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="balance" type="numeric(10,2)">
+                <constraints nullable="false"/>
+            </column>
             <column name="card_holder_name" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-
-            <column name="masked_number" type="varchar(20)">
-                <constraints nullable="false"/>
-            </column>
-
             <column name="expiry_date" type="varchar(7)">
                 <constraints nullable="false"/>
             </column>
-
             <column name="created_at" type="timestamp">
                 <constraints nullable="false"/>
             </column>

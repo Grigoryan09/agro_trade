@@ -11,7 +11,6 @@ public record UpdateUserRequest(
          Gender gender,
          LocalDate birthDate,
          String address,
-
          String email,
          String phoneNumber
 ) {

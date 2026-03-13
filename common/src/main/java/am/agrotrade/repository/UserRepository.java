@@ -1,6 +1,6 @@
 package am.agrotrade.repository;
 
-import am.agrotrade.model.User;
+import am.agrotrade.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {

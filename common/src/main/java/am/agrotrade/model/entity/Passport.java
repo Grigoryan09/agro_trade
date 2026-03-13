@@ -1,16 +1,18 @@
-package am.agrotrade.model;
+package am.agrotrade.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "organization")
-public class Organization {
+@Table(name = "passport")
+public class Passport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,16 +22,11 @@ public class Organization {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String name;
+    private String passportNumber;
 
-    private String licenseNumber;
+    private LocalDate issueDate;
 
-    private String address;
+    private LocalDate expiryDate;
 
-    private String contactNumber;
-
-    private String email;
-
-
-
+    private String issuedBy;
 }

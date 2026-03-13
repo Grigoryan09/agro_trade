@@ -1,4 +1,4 @@
-package am.agrotrade.model;
+package am.agrotrade.model.entity;
 
 import am.agrotrade.model.enums.CategoryProduct;
 import am.agrotrade.model.enums.ProductStatus;
@@ -33,7 +33,7 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
 
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "seller_id")

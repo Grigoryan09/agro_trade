@@ -1,17 +1,18 @@
 package am.agrotrade.service;
 
-import am.agrotrade.model.Order;
+import am.agrotrade.dto.order.request.CreateOrderRequest;
+import am.agrotrade.model.entity.Order;
 
+import java.awt.print.Pageable;
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderService {
 
-    void save(Order order);
+    void save(CreateOrderRequest orderRequest);
 
-    void delete(long orderId);
+    List<Order> findAll(Pageable pageable);
 
-    List<Order> findAll();
+    List<Order> findAllByManagerId(long managerId, Pageable pageable);
 
-    Optional<Order> findById(long orderId);
+    Order findById(long orderId);
 }

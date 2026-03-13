@@ -1,17 +1,15 @@
 package am.agrotrade.service;
 
-import am.agrotrade.model.CreditCard;
+import am.agrotrade.dto.creditCard.request.CreateCreditCardRequest;
+import am.agrotrade.dto.creditCard.response.CardResponse;
+import am.agrotrade.model.entity.CreditCard;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CreditCardService {
 
-    void save(CreditCard creditCard);
+    void save(CreateCreditCardRequest creditCard);
 
-    void delete(long creditCardId);
-
-    List<CreditCard> findAll();
-
-    Optional<CreditCard> findById(long creditCardId);
+    CardResponse findCreditCardByUserId(long userId);
 }

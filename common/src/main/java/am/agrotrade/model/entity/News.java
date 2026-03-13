@@ -1,6 +1,5 @@
-package am.agrotrade.model;
+package am.agrotrade.model.entity;
 
-import am.agrotrade.model.enums.EntityType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,23 +11,20 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "media")
-public class Media {
+@Table(name = "news")
+public class News {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String url;
+    private String title;
 
-    private String filePath;
+    private String content;
 
-    @Enumerated(EnumType.STRING)
-    private EntityType entityType;
-
-    private long entityId;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
 
     private LocalDateTime createdAt;
-
-
 }
