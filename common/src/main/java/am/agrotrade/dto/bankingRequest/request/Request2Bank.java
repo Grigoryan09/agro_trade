@@ -1,18 +1,17 @@
 package am.agrotrade.dto.bankingRequest.request;
 
 import am.agrotrade.dto.product.response.ProductInfoDto;
-import am.agrotrade.model.enums.RepaymentType;
 
 import java.math.BigDecimal;
 
-public record CreateBankingRequest(
+public record Request2Bank(
 
         String bankingRequestType,
         String purpose,
         BigDecimal creditAmount,
-        ProductInfoDto product,
+        ProductInfoDto productInfoDto,
         int repaymentPeriod,
-        RepaymentType repaymentType
+        String repaymentType
 
 ) {
 }

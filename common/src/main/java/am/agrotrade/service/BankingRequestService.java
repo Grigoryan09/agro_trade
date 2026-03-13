@@ -1,7 +1,7 @@
 package am.agrotrade.service;
 
 import am.agrotrade.dto.bankingRequest.request.CreateBankingRequest;
-import am.agrotrade.dto.bankingRequest.response.BaseInfoBankingRequestDto;
+import am.agrotrade.dto.bankingRequest.request.Request2Bank;
 
 import java.awt.print.Pageable;
 import java.util.List;
@@ -12,7 +12,7 @@ public interface BankingRequestService {
 
     void delete(long bankingRequestId);
 
-    List<BaseInfoBankingRequestDto> findAll(Pageable pageable);
+    List<Request2Bank> findAll(Pageable pageable);
 
-    BaseInfoBankingRequestDto findById(long bankingRequestId);
+    Request2Bank findById(long bankingRequestId);
 }

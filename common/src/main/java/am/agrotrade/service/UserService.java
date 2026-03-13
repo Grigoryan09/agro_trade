@@ -2,7 +2,7 @@ package am.agrotrade.service;
 
 import am.agrotrade.dto.user.request.AuthUserRequest;
 import am.agrotrade.dto.user.response.AuthUserResponse;
-import am.agrotrade.dto.user.response.BaseUserInfoDto;
+import am.agrotrade.dto.user.BaseUserInfoDto;
 
 import java.awt.print.Pageable;
 import java.util.List;

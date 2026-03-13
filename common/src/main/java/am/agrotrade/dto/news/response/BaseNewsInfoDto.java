@@ -1,6 +1,6 @@
 package am.agrotrade.dto.news.response;
 
-import am.agrotrade.dto.user.response.BaseUserInfoDto;
+import am.agrotrade.dto.user.BaseUserInfoDto;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package am.agrotrade.dto.user.response;
+package am.agrotrade.dto.user;
 
 import am.agrotrade.model.enums.Role;
 

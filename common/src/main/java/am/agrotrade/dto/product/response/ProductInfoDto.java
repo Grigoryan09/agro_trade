@@ -5,7 +5,7 @@ import am.agrotrade.model.enums.ProductStatus;
 
 import java.math.BigDecimal;
 
-public record BaseProductInfoDto(
+public record ProductInfoDto(
 
         long id,
         String name,

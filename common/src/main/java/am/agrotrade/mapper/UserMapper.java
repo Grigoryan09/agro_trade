@@ -4,7 +4,7 @@ import am.agrotrade.dto.user.request.AuthUserRequest;
 import am.agrotrade.dto.user.request.LoginUserRequest;
 import am.agrotrade.dto.user.request.UpdateUserPasswordRequest;
 import am.agrotrade.dto.user.response.AuthUserResponse;
-import am.agrotrade.dto.user.response.BaseUserInfoDto;
+import am.agrotrade.dto.user.BaseUserInfoDto;
 import am.agrotrade.model.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
