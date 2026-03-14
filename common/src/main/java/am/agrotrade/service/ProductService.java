@@ -1,7 +1,7 @@
 package am.agrotrade.service;
 
 import am.agrotrade.dto.product.request.CreateProductRequest;
-import am.agrotrade.dto.product.response.ProductInfoDto;
+import am.agrotrade.dto.product.response.ProductInfoResponse;
 
 import java.awt.print.Pageable;
 import java.util.List;
@@ -12,11 +12,11 @@ public interface ProductService {
 
     void delete(long productId);
 
-    List<ProductInfoDto> findAll(Pageable pageable);
+    List<ProductInfoResponse> findAll(Pageable pageable);
 
-    ProductInfoDto findById(long productId);
+    ProductInfoResponse findById(long productId);
 
-    ProductInfoDto findProductBySellerId(long sellerId, Pageable pageable);
+    ProductInfoResponse findProductBySellerId(long sellerId, Pageable pageable);
 
 
 }

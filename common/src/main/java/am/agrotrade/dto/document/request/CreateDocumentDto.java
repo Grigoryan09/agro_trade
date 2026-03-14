@@ -5,7 +5,7 @@ import am.agrotrade.model.enums.DocumentType;
 
 import java.time.LocalDateTime;
 
-public record CreateDocumentRequest(
+public record CreateDocumentDto(
 
         DocumentType type,
         String name,

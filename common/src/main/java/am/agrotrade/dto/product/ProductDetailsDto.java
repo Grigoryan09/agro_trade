@@ -1,11 +1,10 @@
 package am.agrotrade.dto.product;
 
-import lombok.Data;
 
-@Data
-public class ProductDetailsDto {
+public record ProductDetailsDto(
 
-    private String productName;
-    private String productType;
+        String productName,
+        String productType
 
+) {
 }

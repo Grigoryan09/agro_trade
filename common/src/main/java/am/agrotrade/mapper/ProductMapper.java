@@ -1,7 +1,7 @@
 package am.agrotrade.mapper;
 
 import am.agrotrade.dto.product.request.CreateProductRequest;
-import am.agrotrade.dto.product.response.ProductInfoDto;
+import am.agrotrade.dto.product.response.ProductInfoResponse;
 import am.agrotrade.model.entity.Product;
 import org.mapstruct.Mapper;
 
@@ -10,5 +10,5 @@ public interface ProductMapper {
 
     Product toEntity(CreateProductRequest productRequest);
 
-    ProductInfoDto toResponse(Product product);
+    ProductInfoResponse toResponse(Product product);
 }

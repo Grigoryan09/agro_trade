@@ -1,8 +1,8 @@
 package am.agrotrade.service;
 
-import am.agrotrade.dto.document.request.CreateDocumentRequest;
+import am.agrotrade.dto.document.request.CreateDocumentDto;
 
 public interface DocumentService {
 
-    void save(CreateDocumentRequest document);
+    void save(CreateDocumentDto document);
 }
