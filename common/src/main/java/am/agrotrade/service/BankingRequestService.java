@@ -1,7 +1,7 @@
 package am.agrotrade.service;
 
 import am.agrotrade.dto.bankingRequest.request.CreateBankingRequest;
-import am.agrotrade.dto.bankingRequest.request.Request2Bank;
+import am.agrotrade.dto.request.Request2Bank;
 
 import java.awt.print.Pageable;
 import java.util.List;

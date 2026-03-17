@@ -1,4 +1,4 @@
-package am.agrotrade.dto.bankingRequest.request;
+package am.agrotrade.dto.request;
 
 import am.agrotrade.dto.product.ProductDetailsDto;
 

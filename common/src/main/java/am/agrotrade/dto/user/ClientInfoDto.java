@@ -1,9 +1,16 @@
 package am.agrotrade.dto.user;
 
-public class ClientInfoDto {
+import am.agrotrade.dto.passport.PassportInfoDto;
 
-    String fullName;
-    String email;
-    String phoneNumber;
+public record ClientInfoDto(
+
+        String fullName,
+        String email,
+        String phoneNumber,
+        PassportInfoDto passportInfo
+
+) {
+
+
 
 }

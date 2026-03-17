@@ -2,14 +2,14 @@ package am.agrotrade.dto.response;
 
 import am.agrotrade.dto.product.ProductDetailsDto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record FinalContractDto(
 
-        String approvedAmount,
+        BigDecimal approvedAmount,
         int approvedPeriod,
         ProductDetailsDto productDetailsDto,
-        String clientPhoneNumber,
         LocalDateTime createdAt
 
 ) {

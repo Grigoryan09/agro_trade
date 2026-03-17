@@ -5,7 +5,7 @@ import am.agrotrade.dto.user.SellerInfoDto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record ProductInfoResponse(
+public record ProductInfoDto(
 
         String name,
         String description,

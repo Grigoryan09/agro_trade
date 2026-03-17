@@ -2,9 +2,11 @@ package am.agrotrade.dto.user.response;
 
 import am.agrotrade.dto.user.UserForAdminDto;
 
+import java.util.List;
+
 public record UserForAdminResponse(
 
-        UserForAdminDto users
+        List<UserForAdminDto> users
 
 ){
 }
