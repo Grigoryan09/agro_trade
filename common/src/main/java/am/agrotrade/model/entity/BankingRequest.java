@@ -24,7 +24,7 @@ public class BankingRequest {
     @Enumerated(EnumType.STRING)
     private BankingRequestType type;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 

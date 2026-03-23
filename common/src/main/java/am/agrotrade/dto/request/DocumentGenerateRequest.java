@@ -5,7 +5,6 @@ import am.agrotrade.dto.response.BankDto;
 import am.agrotrade.dto.response.FinalContractDto;
 import am.agrotrade.dto.response.OfferDto;
 import am.agrotrade.dto.user.ClientInfoDto;
-import am.agrotrade.model.enums.DocumentType;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ public record DocumentGenerateRequest(
         FinalContractDto finalContractDto,
         ClientInfoDto clientInfoDto,
         List<PaymentRowDto> paymentRowDtoList,
-        DocumentType documentType
+        String documentType
 
 ) {
 }

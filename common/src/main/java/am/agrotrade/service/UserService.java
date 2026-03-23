@@ -2,7 +2,7 @@ package am.agrotrade.service;
 
 import am.agrotrade.dto.user.BaseUserInfoDto;
 import am.agrotrade.dto.user.request.AuthUserRequest;
-import am.agrotrade.dto.user.response.AuthUserResponse;
+import am.agrotrade.dto.user.response.AuthUserDto;
 
 import java.awt.print.Pageable;
 import java.util.List;
@@ -15,7 +15,7 @@ public interface UserService {
 
     List<BaseUserInfoDto> findAll(Pageable pageable);
 
-    AuthUserResponse findById(long userId);
+    AuthUserDto findById(long userId);
 
     long findUserIdByRole(String role);
 

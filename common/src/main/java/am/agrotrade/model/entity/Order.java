@@ -19,19 +19,19 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "buyer_id")
     private User buyer;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "seller_id")
     private User seller;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "manager_id")
     private User manager;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
 
