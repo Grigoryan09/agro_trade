@@ -1,7 +1,7 @@
 package am.agrotrade.core.mapper;
 
-import am.agrotrade.core.model.Passport;
 import am.agrotrade.common.dto.passport.request.CreatePassportRequest;
+import am.agrotrade.core.model.Passport;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

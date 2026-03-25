@@ -1,7 +1,7 @@
 package am.agrotrade.core.mapper;
 
-import am.agrotrade.core.model.Organization;
 import am.agrotrade.common.dto.organization.request.CreateOrganizationRequest;
+import am.agrotrade.core.model.Organization;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
