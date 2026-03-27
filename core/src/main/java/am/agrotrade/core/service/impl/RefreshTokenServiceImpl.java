@@ -1,5 +1,6 @@
 package am.agrotrade.core.service.impl;
 
+import am.agrotrade.core.exception.InvalidRefreshTokenException;
 import am.agrotrade.core.model.RefreshToken;
 import am.agrotrade.core.model.User;
 import am.agrotrade.core.repository.RefreshTokenRepository;
@@ -42,10 +43,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Transactional
     public RefreshToken verifyAndRotate(String refreshTokenStr) {
         RefreshToken rt = repository.findByToken(refreshTokenStr)
-                .orElseThrow(() -> new RuntimeException("Refresh токен не найден или недействителен"));
+                .orElseThrow(() -> new InvalidRefreshTokenException("Refresh token not found or invalid"));
 
         if (rt.isRevoked() || rt.isExpired()) {
-            throw new RuntimeException("Refresh токен просрочен или отозван");
+            throw new InvalidRefreshTokenException("Refresh token is expired or revoked");
         }
 
         // Ротация: удаляем старый

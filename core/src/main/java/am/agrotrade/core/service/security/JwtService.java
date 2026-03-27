@@ -1,5 +1,6 @@
 package am.agrotrade.core.service.security;
 
+import am.agrotrade.core.exception.InvalidRefreshTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -77,6 +78,13 @@ public class JwtService {
         }
     }
 
+    public void validateIsRefreshToken(String token) {
+        String type = extractTokenType(token);
+        if (!"refresh".equals(type)) {
+            throw new InvalidRefreshTokenException("Provided token is not a refresh token");
+        }
+    }
+
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
@@ -89,7 +97,7 @@ public class JwtService {
         byte[] keyBytes;
 
         try {
-            keyBytes = Decoders.BASE64.decode(secretKey);   // рекомендуемый способ
+            keyBytes = Decoders.BASE64.decode(secretKey);
         } catch (IllegalArgumentException e) {
             keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         }

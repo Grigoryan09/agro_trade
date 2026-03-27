@@ -26,7 +26,7 @@ public class News {
 
     private String title;
 
-    private String content;
+    private String context;
 
     @ManyToOne
     @JoinColumn(name = "author_id")

@@ -19,7 +19,7 @@ public class WebSecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/agro-trade/api/v1/auth/**").permitAll()
+                        .requestMatchers("/agro-trade-service/api/v1/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();

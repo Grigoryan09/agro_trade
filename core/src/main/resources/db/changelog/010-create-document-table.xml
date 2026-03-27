@@ -16,13 +16,13 @@
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="type" type="varchar(50)">
+            <column name="document_type" type="varchar(50)">
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="format" type="varchar(10)">
+            <column name="document_format" type="varchar(10)">
                 <constraints nullable="false"/>
             </column>
             <column name="file_path" type="text">
