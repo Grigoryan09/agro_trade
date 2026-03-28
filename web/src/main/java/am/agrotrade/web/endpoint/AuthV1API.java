@@ -75,4 +75,3 @@ public interface AuthV1API {
     @PostMapping("/logout")
     void logout(@AuthenticationPrincipal UserPrincipal principal);
 }
-}
