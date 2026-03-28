@@ -3,26 +3,26 @@ package am.agrotrade.core.service;
 import am.agrotrade.common.dto.user.BaseUserInfoDto;
 import am.agrotrade.common.dto.user.request.LoginRequest;
 import am.agrotrade.common.dto.user.request.RegisterRequest;
-import am.agrotrade.common.dto.user.request.ResendCodeResponse;
-import am.agrotrade.common.dto.user.response.LoginResponse;
-import am.agrotrade.common.dto.user.response.RefreshTokenResponse;
-import am.agrotrade.common.dto.user.response.RegisterResponse;
-import am.agrotrade.common.dto.user.response.VerifyResponse;
+import am.agrotrade.common.dto.user.request.ResendCodeDto;
+import am.agrotrade.common.dto.user.response.LoginDto;
+import am.agrotrade.common.dto.user.response.RefreshTokenDto;
+import am.agrotrade.common.dto.user.response.RegisterDto;
+import am.agrotrade.common.dto.user.response.VerifyDto;
 
 import java.awt.print.Pageable;
 import java.util.List;
 
 public interface AuthService {
 
-    RegisterResponse register(RegisterRequest request);
+    RegisterDto register(RegisterRequest request);
 
-    VerifyResponse verify(String email, String code);
+    VerifyDto verify(String email, String code);
 
-    ResendCodeResponse resendVerificationCode(String email);
+    ResendCodeDto resendVerificationCode(String email);
 
-    LoginResponse login(LoginRequest request);
+    LoginDto login(LoginRequest request);
 
-    RefreshTokenResponse refresh(String refreshTokenStr);
+    RefreshTokenDto refresh(String refreshTokenStr);
 
     void logout(long userId);
 

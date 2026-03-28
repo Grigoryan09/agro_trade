@@ -3,11 +3,11 @@ package am.agrotrade.core.service.impl;
 import am.agrotrade.common.dto.user.BaseUserInfoDto;
 import am.agrotrade.common.dto.user.request.LoginRequest;
 import am.agrotrade.common.dto.user.request.RegisterRequest;
-import am.agrotrade.common.dto.user.request.ResendCodeResponse;
-import am.agrotrade.common.dto.user.response.LoginResponse;
-import am.agrotrade.common.dto.user.response.RefreshTokenResponse;
-import am.agrotrade.common.dto.user.response.RegisterResponse;
-import am.agrotrade.common.dto.user.response.VerifyResponse;
+import am.agrotrade.common.dto.user.request.ResendCodeDto;
+import am.agrotrade.common.dto.user.response.LoginDto;
+import am.agrotrade.common.dto.user.response.RefreshTokenDto;
+import am.agrotrade.common.dto.user.response.RegisterDto;
+import am.agrotrade.common.dto.user.response.VerifyDto;
 import am.agrotrade.common.enums.Role;
 import am.agrotrade.core.exception.InvalidCredentialsException;
 import am.agrotrade.core.exception.InvalidVerificationCodeException;
@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public RegisterResponse register(RegisterRequest request) {
+    public RegisterDto register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.username())) {
             throw new UserAlreadyExistsException("Username is already taken");
         }
@@ -67,13 +67,13 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        return new RegisterResponse(
+        return new RegisterDto(
                 true,
                 "User registered successfully. Please verify your email.");
     }
 
     @Override
-    public VerifyResponse verify(String email, String code) {
+    public VerifyDto verify(String email, String code) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
@@ -85,9 +85,6 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidVerificationCodeException("Invalid verification code");
         }
 
-        if (user.getVerificationExpiration().isBefore(LocalDateTime.now())) {
-            throw new InvalidVerificationCodeException("Verification code has expired");
-        }
 
         if (user.getVerificationExpiration().isBefore(LocalDateTime.now())) {
             throw new VerificationCodeExpiredException("Verification code has expired. Please request a new one.");
@@ -99,13 +96,13 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        return new VerifyResponse(
+        return new VerifyDto(
                 true,
                 "Account successfully verified");
     }
 
     @Override
-    public ResendCodeResponse resendVerificationCode(String email) {
+    public ResendCodeDto resendVerificationCode(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
@@ -117,14 +114,14 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        return new ResendCodeResponse(
+        return new ResendCodeDto(
                 "New verification code has been sent to your email",
                 email
         );
     }
 
     @Override
-    public LoginResponse login(LoginRequest request) {
+    public LoginDto login(LoginRequest request) {
         User user = userRepository.findByUsername(request.username())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
@@ -142,21 +139,21 @@ public class AuthServiceImpl implements AuthService {
         String accessToken = jwtService.generateAccessToken(new UserPrincipal(user));
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
-        return new LoginResponse(
+        return new LoginDto(
                 accessToken,
                 refreshToken.getToken(),
                 "Bearer");
     }
 
     @Override
-    public RefreshTokenResponse refresh(String refreshTokenStr) {
+    public RefreshTokenDto refresh(String refreshTokenStr) {
         RefreshToken newRefreshToken = refreshTokenService.verifyAndRotate(refreshTokenStr);
 
         User user = newRefreshToken.getUser();
 
         String newAccessToken = jwtService.generateAccessToken(new UserPrincipal(user));
 
-        return new RefreshTokenResponse(
+        return new RefreshTokenDto(
                 newAccessToken,
                 newRefreshToken.getToken(),
                 "Bearer");

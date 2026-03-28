@@ -25,7 +25,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private long refreshExpirationMs;
 
     @Override
-    @Transactional
     public RefreshToken createRefreshToken(User user) {
         String token = jwtService.generateRefreshToken(new UserPrincipal(user));
 
@@ -40,7 +39,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    @Transactional
     public RefreshToken verifyAndRotate(String refreshTokenStr) {
         RefreshToken rt = repository.findByToken(refreshTokenStr)
                 .orElseThrow(() -> new InvalidRefreshTokenException("Refresh token not found or invalid"));
@@ -49,21 +47,17 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
             throw new InvalidRefreshTokenException("Refresh token is expired or revoked");
         }
 
-        // Ротация: удаляем старый
         repository.delete(rt);
 
-        // Создаём новый
         return createRefreshToken(rt.getUser());
     }
 
     @Override
-    @Transactional
     public void revokeAllForUser(long userId) {
         repository.deleteByUserId(userId);
     }
 
     @Override
-    @Transactional
     public void cleanupExpired() {
         repository.deleteByExpiryDateBefore(new Date());
     }
