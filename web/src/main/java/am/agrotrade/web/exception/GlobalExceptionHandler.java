@@ -1,0 +1,149 @@
+package am.agrotrade.web.exception;
+
+import am.agrotrade.common.dto.response.ErrorResponse;
+import am.agrotrade.common.dto.response.ValidationErrorResponse;
+import am.agrotrade.common.enums.ErrorCode;
+import am.agrotrade.core.exception.InvalidCredentialsException;
+import am.agrotrade.core.exception.InvalidRefreshTokenException;
+import am.agrotrade.core.exception.InvalidVerificationCodeException;
+import am.agrotrade.core.exception.UserAlreadyExistsException;
+import am.agrotrade.core.exception.UserAlreadyVerifiedException;
+import am.agrotrade.core.exception.UserNotFoundException;
+import am.agrotrade.core.exception.UserNotVerifiedException;
+import am.agrotrade.core.exception.VerificationCodeExpiredException;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErrorResponse> handleValidationErrors(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest request
+    ) {
+        List<ValidationErrorResponse.FieldError> details = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fieldError -> new ValidationErrorResponse.FieldError(fieldError.getField(), fieldError.getDefaultMessage()))
+                .toList();
+
+        ValidationErrorResponse response = new ValidationErrorResponse();
+        response.setTimestamp(Instant.now());
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setMessage("Validation Failed");
+        response.setPath(request.getRequestURI());
+        response.setDetails(details);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException ex) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                ErrorCode.USER_ALREADY_EXISTS,
+                Instant.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidRefreshToken(InvalidRefreshTokenException ex) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                ex.getMessage(),
+                ErrorCode.INVALID_REFRESH_TOKEN,
+                Instant.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
+                ErrorCode.USER_NOT_FOUND,
+                Instant.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserNotVerifiedException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotVerified(UserNotVerifiedException ex) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                ex.getMessage(),
+                ErrorCode.USER_NOT_VERIFIED,
+                Instant.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(InvalidVerificationCodeException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotVerified(InvalidVerificationCodeException ex) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                ErrorCode.INVALID_VERIFICATION_CODE,
+                Instant.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserAlreadyVerifiedException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotVerified(UserAlreadyVerifiedException ex) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                ErrorCode.USER_ALREADY_VERIFIED,
+                Instant.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(VerificationCodeExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleVerificationCodeExpired(VerificationCodeExpiredException ex) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                ErrorCode.VERIFICATION_CODE_EXPIRED,
+                Instant.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
+
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                ex.getMessage(),
+                ErrorCode.INVALID_CREDENTIALS,
+                Instant.now()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "An unexpected error occurred"+ ex.getMessage(),
+                ErrorCode.AN_UNEXPECTED_ERROR,
+                Instant.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
