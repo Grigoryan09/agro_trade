@@ -1,15 +1,15 @@
 package am.agrotrade.web.endpoint;
 
 import am.agrotrade.common.dto.user.request.LoginRequest;
-import am.agrotrade.common.dto.user.request.RefreshRequest;
+import am.agrotrade.common.dto.user.request.RefreshTokenRequest;
 import am.agrotrade.common.dto.user.request.RegisterRequest;
 import am.agrotrade.common.dto.user.request.ResendCodeRequest;
-import am.agrotrade.common.dto.user.request.ResendCodeDto;
 import am.agrotrade.common.dto.user.request.VerifyRequest;
-import am.agrotrade.common.dto.user.response.LoginDto;
-import am.agrotrade.common.dto.user.response.RefreshTokenDto;
-import am.agrotrade.common.dto.user.response.RegisterDto;
-import am.agrotrade.common.dto.user.response.VerifyDto;
+import am.agrotrade.common.dto.user.response.LoginResponse;
+import am.agrotrade.common.dto.user.response.RefreshTokenResponse;
+import am.agrotrade.common.dto.user.response.RegisterResponse;
+import am.agrotrade.common.dto.user.response.ResendCodeResponse;
+import am.agrotrade.common.dto.user.response.VerifyResponse;
 import am.agrotrade.core.service.security.UserPrincipal;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,7 +29,7 @@ public interface AuthV1API {
      * @return RegisterDto with created user information
      */
     @PostMapping("/register")
-    RegisterDto register(@Valid @RequestBody RegisterRequest request);
+    RegisterResponse register(@Valid @RequestBody RegisterRequest request);
 
     /**
      * Verifies a user using a verification code.
@@ -38,7 +38,7 @@ public interface AuthV1API {
      * @return VerifyDto with created user information
      */
     @PostMapping("/verify")
-    VerifyDto verify(@Valid @RequestBody VerifyRequest request);
+    VerifyResponse verify(@Valid @RequestBody VerifyRequest request);
 
     /**
      * Resends the verification code to the user.
@@ -47,7 +47,7 @@ public interface AuthV1API {
      * @return ResendCodeDto with resend status information
      */
     @PostMapping("/resend-code")
-    ResendCodeDto resendVerificationCode(@Valid @RequestBody ResendCodeRequest request);
+    ResendCodeResponse resendVerificationCode(@Valid @RequestBody ResendCodeRequest request);
 
     /**
      * Authenticates a user and returns access and refresh tokens.
@@ -56,7 +56,7 @@ public interface AuthV1API {
      * @return LoginDto with authentication tokens
      */
     @PostMapping("/login")
-    LoginDto login(@Valid @RequestBody LoginRequest request);
+    LoginResponse login(@Valid @RequestBody LoginRequest request);
 
     /**
      * Refreshes the access token using a valid refresh token.
@@ -65,7 +65,7 @@ public interface AuthV1API {
      * @return RefreshTokenDto with new access token
      */
     @PostMapping("/refresh")
-    RefreshTokenDto refresh(@Valid @RequestBody RefreshRequest request);
+    RefreshTokenResponse refresh(@Valid @RequestBody RefreshTokenRequest request);
 
     /**
      * Logs out the authenticated user by invalidating tokens.

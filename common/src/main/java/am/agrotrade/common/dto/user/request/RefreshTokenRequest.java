@@ -2,7 +2,7 @@ package am.agrotrade.common.dto.user.request;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record RefreshRequest(
+public record RefreshTokenRequest(
         @NotBlank(message = "Refresh token is required")
         String refreshToken
 ) {

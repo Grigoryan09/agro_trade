@@ -1,15 +1,15 @@
 package am.agrotrade.web.endpoint.impl;
 
 import am.agrotrade.common.dto.user.request.LoginRequest;
-import am.agrotrade.common.dto.user.request.RefreshRequest;
+import am.agrotrade.common.dto.user.request.RefreshTokenRequest;
 import am.agrotrade.common.dto.user.request.RegisterRequest;
 import am.agrotrade.common.dto.user.request.ResendCodeRequest;
-import am.agrotrade.common.dto.user.request.ResendCodeDto;
 import am.agrotrade.common.dto.user.request.VerifyRequest;
-import am.agrotrade.common.dto.user.response.LoginDto;
-import am.agrotrade.common.dto.user.response.RefreshTokenDto;
-import am.agrotrade.common.dto.user.response.RegisterDto;
-import am.agrotrade.common.dto.user.response.VerifyDto;
+import am.agrotrade.common.dto.user.response.LoginResponse;
+import am.agrotrade.common.dto.user.response.RefreshTokenResponse;
+import am.agrotrade.common.dto.user.response.RegisterResponse;
+import am.agrotrade.common.dto.user.response.ResendCodeResponse;
+import am.agrotrade.common.dto.user.response.VerifyResponse;
 import am.agrotrade.core.service.AuthService;
 import am.agrotrade.core.service.security.UserPrincipal;
 import am.agrotrade.web.endpoint.AuthV1API;
@@ -22,28 +22,28 @@ public class AuthV1Endpoint implements AuthV1API {
     private final AuthService authService;
 
     @Override
-    public RegisterDto register(RegisterRequest request) {
-        return authService.register(request);
+    public RegisterResponse register(RegisterRequest request) {
+        return new RegisterResponse(authService.register(request));
     }
 
     @Override
-    public VerifyDto verify(VerifyRequest request) {
-        return authService.verify(request.email(), request.code());
+    public VerifyResponse verify(VerifyRequest request) {
+        return new VerifyResponse(authService.verify(request.email(), request.code()));
     }
 
     @Override
-    public ResendCodeDto resendVerificationCode(ResendCodeRequest request) {
-        return authService.resendVerificationCode(request.email());
+    public ResendCodeResponse resendVerificationCode(ResendCodeRequest request) {
+        return new ResendCodeResponse(authService.resendVerificationCode(request.email()));
     }
 
     @Override
-    public LoginDto login(LoginRequest request) {
-        return authService.login(request);
+    public LoginResponse login(LoginRequest request) {
+        return new LoginResponse(authService.login(request));
     }
 
     @Override
-    public RefreshTokenDto refresh(RefreshRequest request) {
-        return authService.refresh(request.refreshToken());
+    public RefreshTokenResponse refresh(RefreshTokenRequest request) {
+        return new RefreshTokenResponse(authService.refresh(request.refreshToken()));
     }
 
     @Override

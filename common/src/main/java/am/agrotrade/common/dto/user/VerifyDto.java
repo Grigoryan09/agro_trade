@@ -1,4 +1,4 @@
-package am.agrotrade.common.dto.user.response;
+package am.agrotrade.common.dto.user;
 
 public record VerifyDto(
 

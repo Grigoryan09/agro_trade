@@ -1,4 +1,4 @@
-package am.agrotrade.common.dto.user.request;
+package am.agrotrade.common.dto.user;
 
 public record ResendCodeDto(
 
