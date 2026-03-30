@@ -5,7 +5,6 @@ import am.agrotrade.common.dto.organization.request.CreateOrganizationRequest;
 import am.agrotrade.common.dto.organization.request.UpdateOrganizationRequest;
 import am.agrotrade.core.exception.AlreadyExistsException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
-import am.agrotrade.core.exception.UserNotFoundException;
 import am.agrotrade.core.mapper.OrganizationMapper;
 import am.agrotrade.core.model.Organization;
 import am.agrotrade.core.repository.OrganizationRepository;
@@ -46,7 +45,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         Organization organization = organizationMapper.toEntity(request);
 
         organization.setUser(userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found")));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found")));
 
         return organizationMapper.toDto(organizationRepository.save(organization));
     }

@@ -4,7 +4,6 @@ import am.agrotrade.common.dto.passport.PassportInfoDto;
 import am.agrotrade.common.dto.passport.request.CreateAndUpdatePassportRequest;
 import am.agrotrade.core.exception.AlreadyExistsException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
-import am.agrotrade.core.exception.UserNotFoundException;
 import am.agrotrade.core.mapper.PassportMapper;
 import am.agrotrade.core.model.Passport;
 import am.agrotrade.core.repository.PassportRepository;
@@ -37,7 +36,7 @@ public class PassportServiceImpl implements PassportService {
         }
         Passport passport = passportMapper.toEntity(request);
         passport.setUser(userRepository.findById(userId).orElseThrow(()
-                -> new UserNotFoundException("User not found for user ID")));
+                -> new ResourceNotFoundException("User not found for user ID")));
 
         return passportMapper.toDto(passportRepository.save(passport));
     }

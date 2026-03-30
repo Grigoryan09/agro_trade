@@ -17,11 +17,19 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="url" type="varchar(100)">
-                <constraints nullable="false" unique="true"/>
+            <column name="file_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="file_type" type="varchar(100)">
+                <constraints nullable="false"/>
             </column>
 
             <column name="file_path" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sub_folder" type="varchar(200)">
                 <constraints nullable="false"/>
             </column>
 

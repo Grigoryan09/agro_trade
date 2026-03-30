@@ -4,7 +4,9 @@ import am.agrotrade.common.dto.response.ErrorResponse;
 import am.agrotrade.common.dto.response.ValidationErrorResponse;
 import am.agrotrade.common.enums.ErrorCode;
 import am.agrotrade.core.exception.AlreadyExistsException;
+import am.agrotrade.core.exception.ImageUploadException;
 import am.agrotrade.core.exception.InvalidCredentialsException;
+import am.agrotrade.core.exception.InvalidFileException;
 import am.agrotrade.core.exception.InvalidPasswordException;
 import am.agrotrade.core.exception.InvalidRefreshTokenException;
 import am.agrotrade.core.exception.InvalidUserRoleException;
@@ -12,7 +14,6 @@ import am.agrotrade.core.exception.InvalidVerificationCodeException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.exception.UserAlreadyExistsException;
 import am.agrotrade.core.exception.UserAlreadyVerifiedException;
-import am.agrotrade.core.exception.UserNotFoundException;
 import am.agrotrade.core.exception.UserNotVerifiedException;
 import am.agrotrade.core.exception.VerificationCodeExpiredException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -69,17 +70,6 @@ public class GlobalExceptionHandler {
                 Instant.now()
         );
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                ex.getMessage(),
-                ErrorCode.USER_NOT_FOUND,
-                Instant.now()
-        );
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UserNotVerifiedException.class)
@@ -166,7 +156,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage(),
-                ErrorCode.PASSPORT_NOT_FOUND,
+                ErrorCode.RESOURCE_NOT_FOUND,
                 Instant.now()
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -183,11 +173,33 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ImageUploadException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(ImageUploadException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                ErrorCode.IMAGE_UPLOAD_FAILED,
+                Instant.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidFileException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidFileException(InvalidFileException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                ErrorCode.INVALID_FILE,
+                Instant.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "An unexpected error occurred"+ ex.getMessage(),
+                "An unexpected error occurred" + ex.getMessage(),
                 ErrorCode.AN_UNEXPECTED_ERROR,
                 Instant.now()
         );
