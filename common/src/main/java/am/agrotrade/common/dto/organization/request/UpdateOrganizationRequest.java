@@ -2,11 +2,14 @@ package am.agrotrade.common.dto.organization.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record CreateOrganizationRequest(
+public record UpdateOrganizationRequest(
 
+        @NotNull
+        long organizationId,
 
         @NotBlank(message = "Organization name is required")
         @Size(min = 2, max = 100, message = "Organization name must be between 2 and 100 characters")

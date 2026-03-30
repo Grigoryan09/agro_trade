@@ -1,4 +1,4 @@
-package am.agrotrade.core.service.security;
+package am.agrotrade.core.security;
 
 import am.agrotrade.core.model.User;
 import am.agrotrade.core.repository.UserRepository;

@@ -5,12 +5,11 @@ import am.agrotrade.core.model.RefreshToken;
 import am.agrotrade.core.model.User;
 import am.agrotrade.core.repository.RefreshTokenRepository;
 import am.agrotrade.core.service.RefreshTokenService;
-import am.agrotrade.core.service.security.JwtService;
-import am.agrotrade.core.service.security.UserPrincipal;
+import am.agrotrade.core.security.JwtService;
+import am.agrotrade.core.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 

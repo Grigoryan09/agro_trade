@@ -1,4 +1,4 @@
-package am.agrotrade.core.service.security;
+package am.agrotrade.core.security;
 
 import am.agrotrade.core.model.User;
 import am.agrotrade.core.util.SecurityAuthoritiesUtil;
@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public record UserPrincipal(User user) implements UserDetails {
+
 
 
     @Override
@@ -24,5 +25,9 @@ public record UserPrincipal(User user) implements UserDetails {
     @Override
     public String getUsername() {
         return user.getUsername();
+    }
+
+    public long getId() {
+        return user.getId();
     }
 }

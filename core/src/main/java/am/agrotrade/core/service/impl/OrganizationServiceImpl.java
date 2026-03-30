@@ -1,0 +1,77 @@
+package am.agrotrade.core.service.impl;
+
+import am.agrotrade.common.dto.organization.OrganizationDetailsDto;
+import am.agrotrade.common.dto.organization.request.CreateOrganizationRequest;
+import am.agrotrade.common.dto.organization.request.UpdateOrganizationRequest;
+import am.agrotrade.core.exception.AlreadyExistsException;
+import am.agrotrade.core.exception.ResourceNotFoundException;
+import am.agrotrade.core.exception.UserNotFoundException;
+import am.agrotrade.core.mapper.OrganizationMapper;
+import am.agrotrade.core.model.Organization;
+import am.agrotrade.core.repository.OrganizationRepository;
+import am.agrotrade.core.repository.UserRepository;
+import am.agrotrade.core.service.OrganizationService;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class OrganizationServiceImpl implements OrganizationService {
+
+    private final OrganizationRepository organizationRepository;
+    private final UserRepository userRepository;
+    private final OrganizationMapper organizationMapper;
+
+    @Override
+    public List<OrganizationDetailsDto> getOrganizations(long userId) {
+        List<Organization> organizations = organizationRepository.findAllByUserId(userId);
+
+        if (organizations.isEmpty()) {
+            throw new ResourceNotFoundException("No organizations found for user ID: " + userId);
+        }
+
+        return organizationMapper.toDtoList(organizations);
+    }
+
+    @Override
+    @Transactional
+    public OrganizationDetailsDto add(long userId, CreateOrganizationRequest request) {
+        if (organizationRepository.existsByLicenseNumber(request.licenseNumber())) {
+            throw new AlreadyExistsException("Organization with this license number already exists.");
+        }
+
+        Organization organization = organizationMapper.toEntity(request);
+
+        organization.setUser(userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found")));
+
+        return organizationMapper.toDto(organizationRepository.save(organization));
+    }
+
+    @Override
+    @Transactional
+    public OrganizationDetailsDto update(long userId, UpdateOrganizationRequest request) {
+        Organization existingOrg = organizationRepository.findByIdAndUserId(request.organizationId(), userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Organization not found or access denied"));
+
+        existingOrg.setName(request.name());
+        existingOrg.setLicenseNumber(request.licenseNumber());
+        existingOrg.setAddress(request.address());
+        existingOrg.setContactNumber(request.contactNumber());
+        existingOrg.setEmail(request.email());
+
+        return organizationMapper.toDto(organizationRepository.save(existingOrg));
+    }
+
+    @Override
+    @Transactional
+    public void delete(long orgId, long userId) {
+        if (!organizationRepository.existsByIdAndUserId(orgId, userId)) {
+            throw new ResourceNotFoundException("Cannot delete: Organization not found or access denied");
+        }
+        organizationRepository.deleteById(orgId);
+    }
+}
