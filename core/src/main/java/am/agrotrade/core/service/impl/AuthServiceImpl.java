@@ -11,9 +11,9 @@ import am.agrotrade.common.dto.user.VerifyDto;
 import am.agrotrade.common.enums.Role;
 import am.agrotrade.core.exception.InvalidCredentialsException;
 import am.agrotrade.core.exception.InvalidVerificationCodeException;
+import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.exception.UserAlreadyExistsException;
 import am.agrotrade.core.exception.UserAlreadyVerifiedException;
-import am.agrotrade.core.exception.UserNotFoundException;
 import am.agrotrade.core.exception.UserNotVerifiedException;
 import am.agrotrade.core.exception.VerificationCodeExpiredException;
 import am.agrotrade.core.mapper.UserMapper;
@@ -22,8 +22,8 @@ import am.agrotrade.core.model.User;
 import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.AuthService;
 import am.agrotrade.core.service.RefreshTokenService;
-import am.agrotrade.core.service.security.JwtService;
-import am.agrotrade.core.service.security.UserPrincipal;
+import am.agrotrade.core.security.JwtService;
+import am.agrotrade.core.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -75,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public VerifyDto verify(String email, String code) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.isActive()) {
             throw new UserAlreadyVerifiedException("User is already verified");
@@ -104,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResendCodeDto resendVerificationCode(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.isActive()) {
             throw new UserAlreadyVerifiedException("User is already verified");

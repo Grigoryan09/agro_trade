@@ -11,12 +11,14 @@ import am.agrotrade.common.dto.user.response.RegisterResponse;
 import am.agrotrade.common.dto.user.response.ResendCodeResponse;
 import am.agrotrade.common.dto.user.response.VerifyResponse;
 import am.agrotrade.core.service.AuthService;
-import am.agrotrade.core.service.security.UserPrincipal;
+import am.agrotrade.core.security.UserPrincipal;
 import am.agrotrade.web.endpoint.AuthV1API;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 
 @RequiredArgsConstructor
+@Component
 public class AuthV1Endpoint implements AuthV1API {
 
     private final AuthService authService;
@@ -39,11 +41,6 @@ public class AuthV1Endpoint implements AuthV1API {
     @Override
     public LoginResponse login(LoginRequest request) {
         return new LoginResponse(authService.login(request));
-    }
-
-    @Override
-    public RefreshTokenResponse refresh(RefreshTokenRequest request) {
-        return new RefreshTokenResponse(authService.refresh(request.refreshToken()));
     }
 
     @Override

@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "media")
 public class Media {
 
@@ -25,14 +27,18 @@ public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String url;
+    private String fileName;
 
     private String filePath;
+
+    private String fileType;
 
     @Enumerated(EnumType.STRING)
     private EntityType entityType;
 
     private long entityId;
+
+    private String subFolder;
 
     private LocalDateTime createdAt;
 

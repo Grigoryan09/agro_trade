@@ -3,7 +3,6 @@ package am.agrotrade.common.enums;
 public enum ErrorCode {
 
     USER_ALREADY_EXISTS,
-    USER_NOT_FOUND,
     USER_NOT_VERIFIED,
     USER_ALREADY_VERIFIED,
 
@@ -12,6 +11,16 @@ public enum ErrorCode {
     VERIFICATION_CODE_EXPIRED,
 
     INVALID_CREDENTIALS,
+    INVALID_OLD_PASSWORD,
+    INVALID_USER_ROLE,
+    INVALID_FILE,
 
-    AN_UNEXPECTED_ERROR
+    RESOURCE_NOT_FOUND,
+
+    PASSPORT_ALREADY,
+
+    IMAGE_UPLOAD_FAILED,
+
+    AN_UNEXPECTED_ERROR;
+
 }

@@ -3,12 +3,17 @@ package am.agrotrade.web.exception;
 import am.agrotrade.common.dto.response.ErrorResponse;
 import am.agrotrade.common.dto.response.ValidationErrorResponse;
 import am.agrotrade.common.enums.ErrorCode;
+import am.agrotrade.core.exception.AlreadyExistsException;
+import am.agrotrade.core.exception.ImageUploadException;
 import am.agrotrade.core.exception.InvalidCredentialsException;
+import am.agrotrade.core.exception.InvalidFileException;
+import am.agrotrade.core.exception.InvalidPasswordException;
 import am.agrotrade.core.exception.InvalidRefreshTokenException;
+import am.agrotrade.core.exception.InvalidUserRoleException;
 import am.agrotrade.core.exception.InvalidVerificationCodeException;
+import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.exception.UserAlreadyExistsException;
 import am.agrotrade.core.exception.UserAlreadyVerifiedException;
-import am.agrotrade.core.exception.UserNotFoundException;
 import am.agrotrade.core.exception.UserNotVerifiedException;
 import am.agrotrade.core.exception.VerificationCodeExpiredException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +24,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestControllerAdvice
@@ -68,17 +72,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                ex.getMessage(),
-                ErrorCode.USER_NOT_FOUND,
-                Instant.now()
-        );
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
-
     @ExceptionHandler(UserNotVerifiedException.class)
     public ResponseEntity<ErrorResponse> handleUserNotVerified(UserNotVerifiedException ex) {
         ErrorResponse response = new ErrorResponse(
@@ -125,7 +118,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
-
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
                 ex.getMessage(),
@@ -136,11 +128,78 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPassword(InvalidPasswordException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                ErrorCode.INVALID_OLD_PASSWORD,
+                Instant.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidUserRoleException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPassword(InvalidUserRoleException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                ex.getMessage(),
+                ErrorCode.INVALID_USER_ROLE,
+                Instant.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
+                ErrorCode.RESOURCE_NOT_FOUND,
+                Instant.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(AlreadyExistsException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                ErrorCode.PASSPORT_ALREADY,
+                Instant.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ImageUploadException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(ImageUploadException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                ErrorCode.IMAGE_UPLOAD_FAILED,
+                Instant.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidFileException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidFileException(InvalidFileException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                ErrorCode.INVALID_FILE,
+                Instant.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+        String message = "An unexpected error occurred: %s".formatted(ex.getMessage());
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "An unexpected error occurred"+ ex.getMessage(),
+                message,
                 ErrorCode.AN_UNEXPECTED_ERROR,
                 Instant.now()
         );
