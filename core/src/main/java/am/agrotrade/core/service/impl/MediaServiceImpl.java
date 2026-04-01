@@ -8,6 +8,7 @@ import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.mapper.MediaMapper;
 import am.agrotrade.core.model.Media;
 import am.agrotrade.core.repository.MediaRepository;
+import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,46 +32,40 @@ import java.util.UUID;
 public class MediaServiceImpl implements MediaService {
 
     private final MediaRepository mediaRepository;
+    private final UserRepository userRepository;
     private final MediaMapper mediaMapper;
 
     @Value("${app.upload.dir}")
     private String uploadDir;
 
     @Override
-    public MediaDto saveMedia(MultipartFile file, String subFolder, long entityId) {
-        if (file.isEmpty()) {
-            throw new InvalidFileException("Cannot save empty file");
-        }
+    public MediaDto updateAvatar(long userId, MultipartFile file) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        try {
-            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            Path targetPath = Paths.get(uploadDir, subFolder).toAbsolutePath().normalize();
-            Files.createDirectories(targetPath);
+        return saveMedia(file, "users", userId);
 
-            Path filePath = targetPath.resolve(fileName);
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            Media media = Media.builder()
-                    .fileName(fileName)
-                    .fileType(file.getContentType())
-                    .filePath(filePath.toString())
-                    .entityType(EntityType.USER)
-                    .entityId(entityId)
-                    .subFolder(subFolder)
-                    .createdAt(LocalDateTime.now())
-                    .build();
-
-            return mediaMapper.toDto(mediaRepository.save(media));
-        } catch (IOException e) {
-            throw new ImageUploadException("Could not store file. Please try again!");
-        }
     }
+
+    @Override
+    public MediaDto saveMedia(MultipartFile file, String subFolder, long entityId) {
+        validateFile(file);
+
+        String fileName = generateFileName(file);
+        Path filePath = storeFile(file, subFolder, fileName);
+
+        Media media = buildMedia(file, fileName, filePath, subFolder, entityId);
+
+        return mediaMapper.toDto(mediaRepository.save(media));
+    }
+
 
     @Override
     public Resource loadMediaAsResource(long entityId, EntityType entityType) {
         Media media = mediaRepository.findFirstByEntityIdAndEntityTypeOrderByIdDesc(entityId, entityType)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "No media found for " + entityType + " with ID: " + entityId));
+                        "No media found for %s with ID: %d".formatted(entityType, entityId)
+                ));
         try {
             Path filePath = Paths.get(media.getFilePath());
             Resource resource = new UrlResource(filePath.toUri());
@@ -88,5 +83,50 @@ public class MediaServiceImpl implements MediaService {
     @Override
     public List<MediaDto> findAllByEntity(long entityId, EntityType entityType) {
         return mediaMapper.toDtoList(mediaRepository.findAllByEntityIdAndEntityType(entityId, entityType));
+    }
+
+    private void validateFile(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new InvalidFileException("Cannot save empty file");
+        }
+    }
+
+    private String generateFileName(MultipartFile file) {
+        return UUID.randomUUID() + "_" + file.getOriginalFilename();
+    }
+
+    private Path storeFile(MultipartFile file, String subFolder, String fileName) {
+        try {
+            Path targetPath = Paths.get(uploadDir, subFolder)
+                    .toAbsolutePath()
+                    .normalize();
+
+            Files.createDirectories(targetPath);
+
+            Path filePath = targetPath.resolve(fileName);
+
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            return filePath;
+        } catch (IOException e) {
+            throw new ImageUploadException("Could not store file. Please try again!");
+        }
+    }
+
+    private Media buildMedia(MultipartFile file,
+                             String fileName,
+                             Path filePath,
+                             String subFolder,
+                             long entityId) {
+
+        return Media.builder()
+                .fileName(fileName)
+                .fileType(file.getContentType())
+                .filePath(filePath.toString())
+                .entityType(EntityType.USER)
+                .entityId(entityId)
+                .subFolder(subFolder)
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 }

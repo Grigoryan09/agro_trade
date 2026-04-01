@@ -1,6 +1,5 @@
 package am.agrotrade.core.service.impl;
 
-import am.agrotrade.common.dto.media.MediaDto;
 import am.agrotrade.common.dto.user.BaseUserInfoDto;
 import am.agrotrade.common.dto.user.request.ChangePasswordRequest;
 import am.agrotrade.common.dto.user.request.UpdateUserRequest;
@@ -15,7 +14,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +30,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        return userMapper.toDto(user);
+        return userMapper.toBaseUserInfoDto(user);
     }
 
     @Override
@@ -41,13 +39,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        user.setName(request.name());
-        user.setSurname(request.surname());
-        user.setBirthDate(request.birthDate());
-        user.setPhoneNumber(request.phoneNumber());
-        user.setAddress(request.address());
+        userMapper.updateUserFromRequest(request, user);
 
-        return userMapper.toDto(user);
+        return userMapper.toBaseUserInfoDto(user);
     }
 
     @Override
@@ -62,15 +56,6 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(request.newPassword()));
 
-        return userMapper.toDto(user);
-    }
-
-    @Override
-    public MediaDto updateAvatar(long userId, MultipartFile file) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        return mediaService.saveMedia(file, "users", userId);
-
+        return userMapper.toBaseUserInfoDto(user);
     }
 }

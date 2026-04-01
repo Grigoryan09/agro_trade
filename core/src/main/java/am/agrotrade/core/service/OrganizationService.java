@@ -8,11 +8,13 @@ import java.util.List;
 
 public interface OrganizationService {
 
-    List<OrganizationDetailsDto> getOrganizations(long userId);
+    List<OrganizationDetailsDto> getAllByUserId(long userId);
 
-    OrganizationDetailsDto add(long userId, CreateOrganizationRequest request);
+    OrganizationDetailsDto getById(long userId, long organizationId);
 
-    OrganizationDetailsDto update(long userId, UpdateOrganizationRequest request);
+    OrganizationDetailsDto create(long userId, CreateOrganizationRequest request);
 
-    void delete(long orgId, long userId);
+    OrganizationDetailsDto update(long userId, long organizationId, UpdateOrganizationRequest request);
+
+    void delete(long userId, long organizationId);
 }

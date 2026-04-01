@@ -25,19 +25,30 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final OrganizationMapper organizationMapper;
 
     @Override
-    public List<OrganizationDetailsDto> getOrganizations(long userId) {
+    public List<OrganizationDetailsDto> getAllByUserId(long userId) {
         List<Organization> organizations = organizationRepository.findAllByUserId(userId);
 
         if (organizations.isEmpty()) {
-            throw new ResourceNotFoundException("No organizations found for user ID: " + userId);
+            throw new ResourceNotFoundException(
+                    "No organizations found for user ID: %d".formatted(userId)
+            );
         }
 
         return organizationMapper.toDtoList(organizations);
     }
 
     @Override
+    public OrganizationDetailsDto getById(long userId, long organizationId) {
+        Organization org = organizationRepository.findByIdAndUserId(organizationId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Organization not found for ID: %d and user ID: %d".formatted(organizationId, userId)
+                ));
+        return organizationMapper.toDto(org);
+    }
+
+    @Override
     @Transactional
-    public OrganizationDetailsDto add(long userId, CreateOrganizationRequest request) {
+    public OrganizationDetailsDto create(long userId, CreateOrganizationRequest request) {
         if (organizationRepository.existsByLicenseNumber(request.licenseNumber())) {
             throw new AlreadyExistsException("Organization with this license number already exists.");
         }
@@ -52,15 +63,13 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     @Transactional
-    public OrganizationDetailsDto update(long userId, UpdateOrganizationRequest request) {
-        Organization existingOrg = organizationRepository.findByIdAndUserId(request.organizationId(), userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Organization not found or access denied"));
+    public OrganizationDetailsDto update(long userId, long organizationId, UpdateOrganizationRequest request) {
+        Organization existingOrg =
+                organizationRepository.findByIdAndUserId(request.organizationId(), userId)
+                .orElseThrow(()
+                        -> new ResourceNotFoundException("Organization not found or access denied"));
 
-        existingOrg.setName(request.name());
-        existingOrg.setLicenseNumber(request.licenseNumber());
-        existingOrg.setAddress(request.address());
-        existingOrg.setContactNumber(request.contactNumber());
-        existingOrg.setEmail(request.email());
+        organizationMapper.updateOrganizationFromRequest(request,existingOrg);
 
         return organizationMapper.toDto(organizationRepository.save(existingOrg));
     }

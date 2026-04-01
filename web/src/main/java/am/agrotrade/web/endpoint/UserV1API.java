@@ -26,8 +26,8 @@ public interface UserV1API {
      * @param user the authenticated user's security principal
      * @return {@link BaseUserInfoResponse} containing core user profile details
      */
-    @GetMapping("/profile")
-    BaseUserInfoResponse getProfile(
+    @GetMapping()
+    BaseUserInfoResponse get(
             @AuthenticationPrincipal UserPrincipal user);
 
     /**
@@ -37,8 +37,8 @@ public interface UserV1API {
      * @param request the {@link UpdateUserRequest} containing updated personal details
      * @return {@link BaseUserInfoResponse} representing the updated user state
      */
-    @PutMapping("/update-profile")
-    BaseUserInfoResponse updateProfile(
+    @PutMapping()
+    BaseUserInfoResponse update(
             @AuthenticationPrincipal UserPrincipal user,
             @Valid @RequestBody UpdateUserRequest request);
 
@@ -57,22 +57,4 @@ public interface UserV1API {
             @AuthenticationPrincipal UserPrincipal user,
             @Valid @RequestBody ChangePasswordRequest request
     );
-
-    /**
-     * Uploads and updates the profile avatar for the currently authenticated user.
-     * * <p>This method processes an image file provided via a multipart request,
-     * associates it with the user's account extracted from the security context,
-     * and typically stores it in a file system or database.</p>
-     *
-     * @param user The currently authenticated {@link UserPrincipal} obtained from the SecurityContext.
-     * Used to identify the owner of the avatar.
-     * @param file The {@link MultipartFile} object containing the image data.
-     * Expected formats usually include JPG, PNG, or other supported image types.
-     */
-    @PostMapping("/profile/avatar")
-    MediaResponse uploadAvatar(
-            @AuthenticationPrincipal UserPrincipal user,
-            @RequestParam("file") MultipartFile file
-    );
-
 }

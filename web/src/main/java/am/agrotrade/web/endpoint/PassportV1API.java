@@ -23,7 +23,7 @@ public interface PassportV1API {
      * @param userPrincipal the authenticated user's security principal
      * @return {@link PassportInfoResponse} containing the user's passport details
      */
-    @GetMapping("/get")
+    @GetMapping()
     PassportInfoResponse get(
             @AuthenticationPrincipal UserPrincipal userPrincipal
     );
@@ -35,7 +35,7 @@ public interface PassportV1API {
      * @param request the {@link CreateAndUpdatePassportRequest} containing passport data
      * @return {@link PassportInfoResponse} representing the newly created passport
      */
-    @PostMapping("/create")
+    @PostMapping()
     PassportInfoResponse create(
             @AuthenticationPrincipal UserPrincipal user,
             @Valid @RequestBody CreateAndUpdatePassportRequest request
@@ -48,8 +48,8 @@ public interface PassportV1API {
      * @param request the {@link CreateAndUpdatePassportRequest} with updated information
      * @return {@link PassportInfoResponse} representing the updated passport record
      */
-    @PutMapping("/update-passport")
-    PassportInfoResponse updatePassport(
+    @PutMapping()
+    PassportInfoResponse update(
             @AuthenticationPrincipal UserPrincipal user,
             @Valid @RequestBody CreateAndUpdatePassportRequest request
     );
@@ -59,7 +59,7 @@ public interface PassportV1API {
      *
      * @param user the authenticated user's security principal
      */
-    @DeleteMapping("/delete")
+    @DeleteMapping()
     void delete(
             @AuthenticationPrincipal UserPrincipal user
     );

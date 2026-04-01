@@ -10,8 +10,6 @@ import java.util.Collection;
 
 public record UserPrincipal(User user) implements UserDetails {
 
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return SecurityAuthoritiesUtil.authoritiesForRoles(user.getRoles());

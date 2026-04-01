@@ -18,21 +18,26 @@ public class OrganizationV1Endpoint implements OrganizationV1API {
     private final OrganizationService orgService;
 
     @Override
-    public List<OrganizationDetailsResponse> get(UserPrincipal userPrincipal) {
-       return orgService.getOrganizations(userPrincipal.getId())
+    public List<OrganizationDetailsResponse> getAll(UserPrincipal userPrincipal) {
+        return orgService.getAllByUserId(userPrincipal.getId())
                 .stream()
                 .map(OrganizationDetailsResponse::new)
                 .toList();
     }
 
     @Override
-    public OrganizationDetailsResponse create(UserPrincipal user, CreateOrganizationRequest request) {
-        return new OrganizationDetailsResponse(orgService.add(user.getId(), request));
+    public OrganizationDetailsResponse getById(UserPrincipal user, long id) {
+        return new OrganizationDetailsResponse(orgService.getById(user.getId(), id));
     }
 
     @Override
-    public OrganizationDetailsResponse updateOrganization(UserPrincipal user, UpdateOrganizationRequest request) {
-        return new OrganizationDetailsResponse(orgService.update(user.getId(), request));
+    public OrganizationDetailsResponse create(UserPrincipal user, CreateOrganizationRequest request) {
+        return new OrganizationDetailsResponse(orgService.create(user.getId(), request));
+    }
+
+    @Override
+    public OrganizationDetailsResponse update(UserPrincipal user, long id, UpdateOrganizationRequest request) {
+        return new OrganizationDetailsResponse(orgService.update(user.getId(), id, request));
     }
 
     @Override

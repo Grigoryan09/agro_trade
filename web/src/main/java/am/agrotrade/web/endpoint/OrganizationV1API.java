@@ -18,63 +18,74 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * REST controller for managing organization profiles within the Agro Trade service.
- * <p>
- * This interface provides endpoints for users to manage their business or
- * legal entity information, including registration, updates, and retrieval
- * of organization-specific data.
+ * REST API for managing user organizations in the Agro Trade system.
+ * This interface defines the version 1 endpoints for CRUD operations on organizations.
  */
 @RestController
-@RequestMapping("/agro-trade-service/api/v1/user/organization")
+@RequestMapping("/agro-trade-service/api/v1/user/organizations")
 public interface OrganizationV1API {
 
     /**
-     * Retrieves the details of the organization associated with the authenticated user.
+     * Retrieves all organizations associated with the currently authenticated user.
      *
-     * @param userPrincipal the authenticated user's security principal
-     * @return {@link OrganizationDetailsResponse} containing the organization's profile information
+     * @param userPrincipal the authenticated user's details
+     * @return a list of organizations belonging to the user
      */
-    @GetMapping("/get")
-    List<OrganizationDetailsResponse> get(
+    @GetMapping
+    List<OrganizationDetailsResponse> getAll(
             @AuthenticationPrincipal UserPrincipal userPrincipal
     );
 
     /**
-     * Registers a new organization for the authenticated user.
+     * Retrieves specific organization details by its unique identifier.
      *
-     * @param user    the authenticated user's security principal
-     * @param request the {@link UpdateOrganizationRequest} containing the
-     *                organization's legal and contact information
-     * @return {@link OrganizationDetailsResponse} representing the newly created organization
+     * @param userPrincipal the authenticated user's details
+     * @param id   the unique identifier of the organization
+     * @return the details of the requested organization
      */
-    @PostMapping("/create")
+    @GetMapping("/{id}")
+    OrganizationDetailsResponse getById(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable long id
+    );
+
+    /**
+     * Creates a new organization for the authenticated user.
+     *
+     * @param userPrincipal the authenticated user's details
+     * @param request       the data required to create a new organization
+     * @return the details of the newly created organization
+     */
+    @PostMapping
     OrganizationDetailsResponse create(
-            @AuthenticationPrincipal UserPrincipal user,
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
             @Valid @RequestBody CreateOrganizationRequest request
     );
 
     /**
-     * Updates the existing organization information for the authenticated user.
+     * Updates an existing organization's information.
      *
-     * @param user    the authenticated user's security principal
-     * @param request the {@link UpdateOrganizationRequest} with updated details
-     * @return {@link OrganizationDetailsResponse} representing the updated organization state
+     * @param userPrincipal the authenticated user's details
+     * @param id            the unique identifier of the organization to update
+     * @param request       the updated organization data
+     * @return the details of the updated organization
      */
-    @PutMapping("/update-organization")
-    OrganizationDetailsResponse updateOrganization(
-            @AuthenticationPrincipal UserPrincipal user,
+    @PutMapping("/{id}")
+    OrganizationDetailsResponse update(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable long id,
             @Valid @RequestBody UpdateOrganizationRequest request
     );
 
     /**
-     * Deletes the organization record associated with the authenticated user.
-     * <p>
-     * Use with caution as this may impact related microservices like leasing or banking contracts.
+     * Deletes an organization from the system.
      *
-     * @param user the authenticated user's security principal
+     * @param userPrincipal the authenticated user's details
+     * @param id            the unique identifier of the organization to delete
      */
     @DeleteMapping("/{id}")
     void delete(
-            @AuthenticationPrincipal UserPrincipal user,
-            @PathVariable long id);
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable long id
+    );
 }

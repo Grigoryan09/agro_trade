@@ -6,6 +6,7 @@ import am.agrotrade.core.exception.AlreadyExistsException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.mapper.PassportMapper;
 import am.agrotrade.core.model.Passport;
+import am.agrotrade.core.model.User;
 import am.agrotrade.core.repository.PassportRepository;
 import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.PassportService;
@@ -26,17 +27,26 @@ public class PassportServiceImpl implements PassportService {
     public PassportInfoDto getPassport(long userId) {
         return passportMapper.toDto(passportRepository.findByUserId(userId)
                 .orElseThrow(()
-                        -> new ResourceNotFoundException("Passport not found for user ID: " + userId)));
+                        -> new ResourceNotFoundException(
+                                "Passport not found for user ID: %d".formatted(userId))));
     }
 
     @Override
     public PassportInfoDto add(long userId, CreateAndUpdatePassportRequest request) {
+
         if (passportRepository.existsByUserId(userId)) {
-            throw new AlreadyExistsException("Passport already exists for this user. Use update instead.");
+            throw new AlreadyExistsException(
+                    "Passport already exists for user ID: %d. Use update instead.".formatted(userId)
+            );
         }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found for user ID: %d".formatted(userId)
+                ));
+
         Passport passport = passportMapper.toEntity(request);
-        passport.setUser(userRepository.findById(userId).orElseThrow(()
-                -> new ResourceNotFoundException("User not found for user ID")));
+        passport.setUser(user);
 
         return passportMapper.toDto(passportRepository.save(passport));
     }
@@ -46,10 +56,8 @@ public class PassportServiceImpl implements PassportService {
         Passport existingPassport = passportRepository.findByUserId(userId)
                 .orElseThrow(()
                         -> new ResourceNotFoundException("Cannot update: Passport not found for user ID:"));
-        existingPassport.setPassportNumber(request.passportNumber());
-        existingPassport.setIssueDate(request.issueDate());
-        existingPassport.setExpiryDate(request.expiryDate());
-        existingPassport.setIssuedBy(request.issuedBy());
+
+        passportMapper.updatePassportFromRequest(request,existingPassport);
 
         return passportMapper.toDto(passportRepository.save(existingPassport));
     }

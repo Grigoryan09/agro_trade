@@ -62,15 +62,7 @@ public interface AuthV1API {
     LoginResponse login(@Valid @RequestBody LoginRequest request);
 
     /**
-     * Issues a new access token using a valid, non-expired refresh token.
      *
-     * @param request the {@link RefreshTokenRequest} containing the current refresh token
-     * @return {@link RefreshTokenResponse} containing the new access and refresh tokens
-     */
-    @PostMapping("/refresh")
-    RefreshTokenResponse refresh(@Valid @RequestBody RefreshTokenRequest request);
-
-    /**
      * Invalidates the current session and logs out the authenticated user.
      *
      * @param principal the currently authenticated {@link UserPrincipal}

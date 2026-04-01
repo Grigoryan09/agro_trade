@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface MediaService {
 
+    MediaDto updateAvatar(long userId, MultipartFile file);
+
     MediaDto saveMedia(MultipartFile file, String subFolder,long entityId);
 
     Resource loadMediaAsResource(long entityId, EntityType entityType);

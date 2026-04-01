@@ -4,8 +4,12 @@ import am.agrotrade.common.dto.user.BaseUserInfoDto;
 import am.agrotrade.common.dto.user.request.ChangePasswordRequest;
 import am.agrotrade.common.dto.user.request.LoginRequest;
 import am.agrotrade.common.dto.user.request.RegisterRequest;
+import am.agrotrade.common.dto.user.request.UpdateUserRequest;
 import am.agrotrade.core.model.User;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -17,7 +21,10 @@ public interface UserMapper {
 
     User toEntity(ChangePasswordRequest updateUserRequest);
 
-    BaseUserInfoDto toDto(User user);
+    BaseUserInfoDto toBaseUserInfoDto(User user);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateUserFromRequest(UpdateUserRequest request, @MappingTarget User user);
 
 
 }

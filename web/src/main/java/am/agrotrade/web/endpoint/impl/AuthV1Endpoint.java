@@ -44,11 +44,6 @@ public class AuthV1Endpoint implements AuthV1API {
     }
 
     @Override
-    public RefreshTokenResponse refresh(RefreshTokenRequest request) {
-        return new RefreshTokenResponse(authService.refresh(request.refreshToken()));
-    }
-
-    @Override
     public void logout(UserPrincipal principal) {
         authService.logout(principal.user().getId());
     }
