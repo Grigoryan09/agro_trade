@@ -1,4 +1,4 @@
-package am.agrotrade.common.dto.product.response;
+package am.agrotrade.common.dto.product;
 
 import am.agrotrade.common.dto.user.SellerInfoDto;
 
@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 public record ProductInfoDto(
 
+        long id,
         String name,
         String description,
         BigDecimal price,

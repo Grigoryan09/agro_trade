@@ -12,5 +12,4 @@ public record ClientInfoDto(
 ) {
 
 
-
 }

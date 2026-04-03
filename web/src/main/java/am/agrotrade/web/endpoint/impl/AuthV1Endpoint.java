@@ -1,17 +1,15 @@
 package am.agrotrade.web.endpoint.impl;
 
 import am.agrotrade.common.dto.user.request.LoginRequest;
-import am.agrotrade.common.dto.user.request.RefreshTokenRequest;
 import am.agrotrade.common.dto.user.request.RegisterRequest;
 import am.agrotrade.common.dto.user.request.ResendCodeRequest;
 import am.agrotrade.common.dto.user.request.VerifyRequest;
 import am.agrotrade.common.dto.user.response.LoginResponse;
-import am.agrotrade.common.dto.user.response.RefreshTokenResponse;
 import am.agrotrade.common.dto.user.response.RegisterResponse;
 import am.agrotrade.common.dto.user.response.ResendCodeResponse;
 import am.agrotrade.common.dto.user.response.VerifyResponse;
-import am.agrotrade.core.service.AuthService;
 import am.agrotrade.core.security.UserPrincipal;
+import am.agrotrade.core.service.AuthService;
 import am.agrotrade.web.endpoint.AuthV1API;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

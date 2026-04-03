@@ -51,7 +51,7 @@ public class BankingRequest {
     private int repaymentPeriod;
 
     @Enumerated(EnumType.STRING)
-    private RepaymentType  repaymentType;
+    private RepaymentType repaymentType;
 
 
 }

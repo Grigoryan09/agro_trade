@@ -1,7 +1,13 @@
 package am.agrotrade.web.endpoint;
 
-import am.agrotrade.common.dto.user.request.*;
-import am.agrotrade.common.dto.user.response.*;
+import am.agrotrade.common.dto.user.request.LoginRequest;
+import am.agrotrade.common.dto.user.request.RegisterRequest;
+import am.agrotrade.common.dto.user.request.ResendCodeRequest;
+import am.agrotrade.common.dto.user.request.VerifyRequest;
+import am.agrotrade.common.dto.user.response.LoginResponse;
+import am.agrotrade.common.dto.user.response.RegisterResponse;
+import am.agrotrade.common.dto.user.response.ResendCodeResponse;
+import am.agrotrade.common.dto.user.response.VerifyResponse;
 import am.agrotrade.core.security.UserPrincipal;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * REST controller for authentication and authorization operations.
  * <p>
  * This interface handles the security lifecycle of a user, including registration,
- * account verification, multi-factor code resending, and JWT token management
+ * account verification, multifactor code resending, and JWT token management
  * (login, refresh, and logout).
  */
 @RestController

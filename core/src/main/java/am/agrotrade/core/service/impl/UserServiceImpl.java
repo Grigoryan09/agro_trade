@@ -10,10 +10,11 @@ import am.agrotrade.core.model.User;
 import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.MediaService;
 import am.agrotrade.core.service.UserService;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BaseUserInfoDto get(String username) {
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return userMapper.toBaseUserInfoDto(user);
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public BaseUserInfoDto update(String username, UpdateUserRequest request) {
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         userMapper.updateUserFromRequest(request, user);
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public BaseUserInfoDto changePassword(String username, ChangePasswordRequest request) {
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {

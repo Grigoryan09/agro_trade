@@ -1,6 +1,6 @@
 package am.agrotrade.common.dto.bankingRequest.request;
 
-import am.agrotrade.common.dto.product.response.ProductInfoDto;
+import am.agrotrade.common.dto.product.ProductInfoDto;
 import am.agrotrade.common.enums.RepaymentType;
 
 import java.math.BigDecimal;

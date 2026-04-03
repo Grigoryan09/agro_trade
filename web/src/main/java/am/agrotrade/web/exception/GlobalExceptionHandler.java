@@ -19,6 +19,7 @@ import am.agrotrade.core.exception.VerificationCodeExpiredException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -84,7 +85,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidVerificationCodeException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotVerified(InvalidVerificationCodeException ex) {
+    public ResponseEntity<ErrorResponse> handleInvalidVerificationCode(InvalidVerificationCodeException ex) {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
@@ -95,7 +96,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserAlreadyVerifiedException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotVerified(UserAlreadyVerifiedException ex) {
+    public ResponseEntity<ErrorResponse> handleUserAlreadyVerified(UserAlreadyVerifiedException ex) {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 ex.getMessage(),
@@ -140,7 +141,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidUserRoleException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidPassword(InvalidUserRoleException ex) {
+    public ResponseEntity<ErrorResponse> handleInvalidUserRole(InvalidUserRoleException ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.FORBIDDEN.value(),
                 ex.getMessage(),
@@ -162,7 +163,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFound(AlreadyExistsException ex) {
+    public ResponseEntity<ErrorResponse> handleAlreadyExists(AlreadyExistsException ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
@@ -173,7 +174,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ImageUploadException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFound(ImageUploadException ex) {
+    public ResponseEntity<ErrorResponse> handleImageUpload(ImageUploadException ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
@@ -192,6 +193,17 @@ public class GlobalExceptionHandler {
                 Instant.now()
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAuthCredentialsNotFound(AuthenticationCredentialsNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                ex.getMessage(),
+                ErrorCode.UNAUTHORIZED,
+                Instant.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)

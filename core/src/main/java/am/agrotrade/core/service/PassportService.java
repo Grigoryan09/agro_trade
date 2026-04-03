@@ -7,7 +7,7 @@ public interface PassportService {
 
     PassportInfoDto getPassport(long userId);
 
-    PassportInfoDto add(long userId , CreateAndUpdatePassportRequest request);
+    PassportInfoDto add(long userId, CreateAndUpdatePassportRequest request);
 
     PassportInfoDto update(long userId, CreateAndUpdatePassportRequest request);
 

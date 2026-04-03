@@ -1,14 +1,16 @@
 package am.agrotrade.web.endpoint;
 
-import am.agrotrade.common.dto.media.response.MediaResponse;
 import am.agrotrade.common.dto.user.request.ChangePasswordRequest;
 import am.agrotrade.common.dto.user.request.UpdateUserRequest;
 import am.agrotrade.common.dto.user.response.BaseUserInfoResponse;
 import am.agrotrade.core.security.UserPrincipal;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST controller for managing user profile information and security settings.

@@ -12,7 +12,9 @@ public interface MediaService {
 
     MediaDto updateAvatar(long userId, MultipartFile file);
 
-    MediaDto saveMedia(MultipartFile file, String subFolder,long entityId);
+    MediaDto saveMedia(MultipartFile file, long entityId, EntityType entityType);
+
+    List<MediaDto> saveMultipleMedia(List<MultipartFile> files, long entityId, EntityType entityType);
 
     Resource loadMediaAsResource(long entityId, EntityType entityType);
 

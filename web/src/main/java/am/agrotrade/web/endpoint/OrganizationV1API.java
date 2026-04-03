@@ -4,6 +4,7 @@ import am.agrotrade.common.dto.organization.request.CreateOrganizationRequest;
 import am.agrotrade.common.dto.organization.request.UpdateOrganizationRequest;
 import am.agrotrade.common.dto.organization.response.OrganizationDetailsResponse;
 import am.agrotrade.core.security.UserPrincipal;
+import am.agrotrade.web.infrastructure.annotation.CurrentUserId;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,12 +41,12 @@ public interface OrganizationV1API {
      * Retrieves specific organization details by its unique identifier.
      *
      * @param userPrincipal the authenticated user's details
-     * @param id   the unique identifier of the organization
+     * @param id            the unique identifier of the organization
      * @return the details of the requested organization
      */
     @GetMapping("/{id}")
     OrganizationDetailsResponse getById(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @CurrentUserId UserPrincipal userPrincipal,
             @PathVariable long id
     );
 
