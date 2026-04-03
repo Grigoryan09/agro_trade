@@ -1,7 +1,6 @@
 package am.agrotrade.core.mapper;
 
 import am.agrotrade.common.dto.media.MediaDto;
-import am.agrotrade.common.dto.media.response.MediaResponse;
 import am.agrotrade.core.model.Media;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,5 +20,4 @@ public abstract class MediaMapper {
 
     public abstract List<MediaDto> toDtoList(List<Media> mediaList);
 
-    public abstract List<MediaResponse> toResponseList(List<MediaDto> mediaDtoList);
 }

@@ -61,9 +61,9 @@ public class ProductServiceImpl implements ProductService {
     /**
      * Updates an existing product. Only the owner (seller) can update their product.
      *
-     * @param sellerId the ID of the seller trying to update the product
+     * @param sellerId  the ID of the seller trying to update the product
      * @param productId the ID of the product to update
-     * @param request the updated product data
+     * @param request   the updated product data
      * @return the updated product as {@link ProductInfoDto}
      * @throws ResourceNotFoundException if the product is not found or does not belong to the seller
      */
@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
      * Soft deletes a product by changing its status to {@link ProductStatus#DELETED}.
      * Only the owner (seller) can delete their product.
      *
-     * @param sellerId the ID of the seller trying to delete the product
+     * @param sellerId  the ID of the seller trying to delete the product
      * @param productId the ID of the product to delete
      * @throws ResourceNotFoundException if the product is not found or does not belong to the seller
      */
