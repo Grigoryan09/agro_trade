@@ -21,12 +21,12 @@ public class PassportV1Endpoint implements PassportV1API {
 
     @Override
     public PassportInfoResponse create(UserPrincipal user, CreateAndUpdatePassportRequest request) {
-        return new PassportInfoResponse(passportService.add(user.getId(),request));
+        return new PassportInfoResponse(passportService.add(user.getId(), request));
     }
 
     @Override
     public PassportInfoResponse update(UserPrincipal user, CreateAndUpdatePassportRequest request) {
-        return new PassportInfoResponse(passportService.update(user.getId(),request));
+        return new PassportInfoResponse(passportService.update(user.getId(), request));
     }
 
     @Override

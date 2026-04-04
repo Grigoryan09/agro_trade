@@ -19,4 +19,5 @@ public abstract class MediaMapper {
     public abstract MediaDto toDto(Media media);
 
     public abstract List<MediaDto> toDtoList(List<Media> mediaList);
+
 }

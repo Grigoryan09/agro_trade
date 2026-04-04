@@ -8,12 +8,11 @@ import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.mapper.MediaMapper;
 import am.agrotrade.core.model.Media;
 import am.agrotrade.core.repository.MediaRepository;
-import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,33 +31,32 @@ import java.util.UUID;
 public class MediaServiceImpl implements MediaService {
 
     private final MediaRepository mediaRepository;
-    private final UserRepository userRepository;
     private final MediaMapper mediaMapper;
 
     @Value("${app.upload.dir}")
     private String uploadDir;
 
-    @Override
-    public MediaDto updateAvatar(long userId, MultipartFile file) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        return saveMedia(file, "users", userId);
-
-    }
-
-    @Override
-    public MediaDto saveMedia(MultipartFile file, String subFolder, long entityId) {
+    private MediaDto saveMedia(MultipartFile file, long entityId, EntityType type) {
         validateFile(file);
 
         String fileName = generateFileName(file);
+        String subFolder = subFolder(type);
         Path filePath = storeFile(file, subFolder, fileName);
 
-        Media media = buildMedia(file, fileName, filePath, subFolder, entityId);
+        Media media = buildMedia(file, fileName, filePath, subFolder, entityId, type);
 
         return mediaMapper.toDto(mediaRepository.save(media));
     }
 
+    @Override
+    public List<MediaDto> saveMultipleMedia(List<MultipartFile> files, long entityId, EntityType entityType) {
+        if (files == null || files.isEmpty()) {
+            return List.of();
+        }
+        return files.stream()
+                .map(file -> saveMedia(file, entityId, entityType))
+                .toList();
+    }
 
     @Override
     public Resource loadMediaAsResource(long entityId, EntityType entityType) {
@@ -85,6 +83,7 @@ public class MediaServiceImpl implements MediaService {
         return mediaMapper.toDtoList(mediaRepository.findAllByEntityIdAndEntityType(entityId, entityType));
     }
 
+
     private void validateFile(MultipartFile file) {
         if (file.isEmpty()) {
             throw new InvalidFileException("Cannot save empty file");
@@ -94,6 +93,7 @@ public class MediaServiceImpl implements MediaService {
     private String generateFileName(MultipartFile file) {
         return UUID.randomUUID() + "_" + file.getOriginalFilename();
     }
+
 
     private Path storeFile(MultipartFile file, String subFolder, String fileName) {
         try {
@@ -117,16 +117,21 @@ public class MediaServiceImpl implements MediaService {
                              String fileName,
                              Path filePath,
                              String subFolder,
-                             long entityId) {
+                             long entityId,
+                             EntityType type) {
 
         return Media.builder()
                 .fileName(fileName)
                 .fileType(file.getContentType())
                 .filePath(filePath.toString())
-                .entityType(EntityType.USER)
+                .entityType(type)
                 .entityId(entityId)
                 .subFolder(subFolder)
                 .createdAt(LocalDateTime.now())
                 .build();
+    }
+
+    private String subFolder(EntityType entityType) {
+        return entityType.name().toLowerCase() + "s";
     }
 }

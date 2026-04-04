@@ -1,13 +1,13 @@
 package am.agrotrade.core.service.impl;
 
 import am.agrotrade.common.dto.user.BaseUserInfoDto;
-import am.agrotrade.common.dto.user.request.LoginRequest;
-import am.agrotrade.common.dto.user.request.RegisterRequest;
-import am.agrotrade.common.dto.user.ResendCodeDto;
 import am.agrotrade.common.dto.user.LoginDto;
 import am.agrotrade.common.dto.user.RefreshTokenDto;
 import am.agrotrade.common.dto.user.RegisterDto;
+import am.agrotrade.common.dto.user.ResendCodeDto;
 import am.agrotrade.common.dto.user.VerifyDto;
+import am.agrotrade.common.dto.user.request.LoginRequest;
+import am.agrotrade.common.dto.user.request.RegisterRequest;
 import am.agrotrade.common.enums.Role;
 import am.agrotrade.core.exception.InvalidCredentialsException;
 import am.agrotrade.core.exception.InvalidVerificationCodeException;
@@ -20,10 +20,10 @@ import am.agrotrade.core.mapper.UserMapper;
 import am.agrotrade.core.model.RefreshToken;
 import am.agrotrade.core.model.User;
 import am.agrotrade.core.repository.UserRepository;
-import am.agrotrade.core.service.AuthService;
-import am.agrotrade.core.service.RefreshTokenService;
 import am.agrotrade.core.security.JwtService;
 import am.agrotrade.core.security.UserPrincipal;
+import am.agrotrade.core.service.AuthService;
+import am.agrotrade.core.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -49,10 +49,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public RegisterDto register(RegisterRequest request) {
-        if (userRepository.existsByUsername(request.username())) {
+        if (userRepository.existsByUsernameIgnoreCase(request.username())) {
             throw new UserAlreadyExistsException("Username is already taken");
         }
-        if (userRepository.existsByEmail(request.email())) {
+        if (userRepository.existsByEmailIgnoreCase(request.email())) {
             throw new UserAlreadyExistsException("Email is already taken");
         }
 
@@ -74,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public VerifyDto verify(String email, String code) {
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.isActive()) {
@@ -103,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResendCodeDto resendVerificationCode(String email) {
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.isActive()) {
@@ -122,7 +122,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginDto login(LoginRequest request) {
-        User user = userRepository.findByUsername(request.username())
+        User user = userRepository.findByUsernameIgnoreCase(request.username())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
         if (!user.isActive()) {
@@ -132,7 +132,7 @@ public class AuthServiceImpl implements AuthService {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.username(), request.password())
             );
-        }catch (BadCredentialsException e) {
+        } catch (BadCredentialsException e) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
 

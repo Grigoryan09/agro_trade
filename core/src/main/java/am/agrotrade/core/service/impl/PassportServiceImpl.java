@@ -10,9 +10,10 @@ import am.agrotrade.core.model.User;
 import am.agrotrade.core.repository.PassportRepository;
 import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.PassportService;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class PassportServiceImpl implements PassportService {
         return passportMapper.toDto(passportRepository.findByUserId(userId)
                 .orElseThrow(()
                         -> new ResourceNotFoundException(
-                                "Passport not found for user ID: %d".formatted(userId))));
+                        "Passport not found for user ID: %d".formatted(userId))));
     }
 
     @Override
@@ -57,7 +58,7 @@ public class PassportServiceImpl implements PassportService {
                 .orElseThrow(()
                         -> new ResourceNotFoundException("Cannot update: Passport not found for user ID:"));
 
-        passportMapper.updatePassportFromRequest(request,existingPassport);
+        passportMapper.updatePassportFromRequest(request, existingPassport);
 
         return passportMapper.toDto(passportRepository.save(existingPassport));
     }

@@ -4,4 +4,5 @@ public record RefreshTokenDto(
         String accessToken,
         String refreshToken,
         String tokenType
-) {}
+) {
+}

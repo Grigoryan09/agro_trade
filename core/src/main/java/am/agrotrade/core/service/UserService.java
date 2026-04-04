@@ -8,7 +8,7 @@ public interface UserService {
 
     BaseUserInfoDto get(String username);
 
-    BaseUserInfoDto update(String username , UpdateUserRequest request);
+    BaseUserInfoDto update(String username, UpdateUserRequest request);
 
     BaseUserInfoDto changePassword(String username, ChangePasswordRequest request);
 }

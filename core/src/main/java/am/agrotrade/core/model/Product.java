@@ -39,7 +39,7 @@ public class Product {
     private CategoryProduct category;
 
     @Enumerated(EnumType.STRING)
-    private ProductStatus productStatus;
+    private ProductStatus status;
 
     private LocalDateTime createdAt;
 

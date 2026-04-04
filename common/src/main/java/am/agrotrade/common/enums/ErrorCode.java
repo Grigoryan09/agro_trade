@@ -2,6 +2,8 @@ package am.agrotrade.common.enums;
 
 public enum ErrorCode {
 
+    UNAUTHORIZED,
+
     USER_ALREADY_EXISTS,
     USER_NOT_VERIFIED,
     USER_ALREADY_VERIFIED,

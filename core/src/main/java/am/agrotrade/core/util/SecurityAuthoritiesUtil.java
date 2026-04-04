@@ -8,7 +8,8 @@ import java.util.List;
 
 public final class SecurityAuthoritiesUtil {
 
-    private SecurityAuthoritiesUtil() {}
+    private SecurityAuthoritiesUtil() {
+    }
 
     public static List<SimpleGrantedAuthority> authoritiesForRoles(List<Role> roles) {
         if (roles == null || roles.isEmpty()) {

@@ -1,22 +1,26 @@
 package am.agrotrade.core.service;
 
+import am.agrotrade.common.dto.product.ProductInfoDto;
 import am.agrotrade.common.dto.product.request.CreateProductRequest;
-import am.agrotrade.common.dto.product.response.ProductInfoDto;
-
-import java.awt.print.Pageable;
-import java.util.List;
+import am.agrotrade.common.dto.product.request.UpdateProductRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
 
-    void save(CreateProductRequest product);
+    ProductInfoDto create(long sellerId, CreateProductRequest product);
 
-    void delete(long productId);
+    ProductInfoDto update(long sellerId, long productId, UpdateProductRequest request);
 
-    List<ProductInfoDto> findAll(Pageable pageable);
+    void delete(long sellerId, long productId);
+
+    Page<ProductInfoDto> findAllByStatusNot(Pageable pageable);
+
+    Page<ProductInfoDto> findAllBySeller(long sellerId, Pageable pageable);
+
+    Page<ProductInfoDto> findAll(Pageable pageable);
 
     ProductInfoDto findById(long productId);
-
-    ProductInfoDto findProductBySellerId(long sellerId, Pageable pageable);
 
 
 }

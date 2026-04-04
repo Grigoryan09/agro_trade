@@ -4,4 +4,5 @@ public record LoginDto(
         String accessToken,
         String refreshToken,
         String tokenType
-) {}
+) {
+}

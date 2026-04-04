@@ -10,9 +10,9 @@ import am.agrotrade.core.model.Organization;
 import am.agrotrade.core.repository.OrganizationRepository;
 import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.OrganizationService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -66,10 +66,10 @@ public class OrganizationServiceImpl implements OrganizationService {
     public OrganizationDetailsDto update(long userId, long organizationId, UpdateOrganizationRequest request) {
         Organization existingOrg =
                 organizationRepository.findByIdAndUserId(request.organizationId(), userId)
-                .orElseThrow(()
-                        -> new ResourceNotFoundException("Organization not found or access denied"));
+                        .orElseThrow(()
+                                -> new ResourceNotFoundException("Organization not found or access denied"));
 
-        organizationMapper.updateOrganizationFromRequest(request,existingOrg);
+        organizationMapper.updateOrganizationFromRequest(request, existingOrg);
 
         return organizationMapper.toDto(organizationRepository.save(existingOrg));
     }

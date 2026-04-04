@@ -4,4 +4,5 @@ public record VerifyDto(
 
         boolean success,
         String message
-) {}
+) {
+}

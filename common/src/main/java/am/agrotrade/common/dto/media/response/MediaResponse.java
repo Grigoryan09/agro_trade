@@ -2,5 +2,7 @@ package am.agrotrade.common.dto.media.response;
 
 import am.agrotrade.common.dto.media.MediaDto;
 
-public record MediaResponse(MediaDto mediaDto) {
+import java.util.List;
+
+public record MediaResponse(List<MediaDto> mediaDtoList) {
 }

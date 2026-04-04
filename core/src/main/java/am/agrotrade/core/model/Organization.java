@@ -37,5 +37,4 @@ public class Organization {
     private String email;
 
 
-
 }

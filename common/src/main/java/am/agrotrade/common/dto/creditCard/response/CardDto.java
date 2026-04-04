@@ -5,5 +5,5 @@ public record CardDto(
         long id,
         String maskedNumber
 
-){
+) {
 }

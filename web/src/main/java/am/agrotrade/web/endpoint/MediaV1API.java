@@ -1,33 +1,42 @@
 package am.agrotrade.web.endpoint;
 
 import am.agrotrade.common.dto.media.response.MediaResponse;
-import am.agrotrade.core.security.UserPrincipal;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import am.agrotrade.common.enums.EntityType;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
- * REST controller for handling media-related operations within the Agro Trade service.
+ * REST API for media management in the AgroTrade system.
  * <p>
- * This includes uploading user avatars or other media files associated with a user.
- * The controller separates media management from user profile endpoints.
+ * Provides endpoints for uploading user avatars and handling bulk image
+ * uploads for various system entities like Products and News.
+ * </p>
  */
 @RestController
 @RequestMapping("/agro-trade-service/api/v1/media")
 public interface MediaV1API {
 
     /**
-     * Uploads a media file (e.g., user avatar) for the authenticated user.
+     * Uploads multiple images and associates them with a specific system entity.
      * <p>
-     * Expected formats usually include JPG, PNG, or other supported image types.
+     * This is a generic endpoint used for entities that support multiple media files,
+     * such as {@link EntityType#PRODUCT} or {@link EntityType#NEWS}.
+     * </p>
      *
-     * @param userPrincipal the authenticated user's security principal
-     * @param file          the media file to upload
-     * @return a {@link MediaResponse} containing metadata about the uploaded file
+     * @param entityType the type of the entity (e.g., PRODUCT, NEWS).
+     * @param entityId   the unique identifier of the target entity.
+     * @param files      a list of multipart files to be stored and linked to the entity.
+     * @return a list of {@link MediaResponse} objects representing all successfully saved files.
      */
-    @PostMapping("/avatar")
-    MediaResponse uploadAvatar(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestParam("file") MultipartFile file
-    );
+    @PostMapping("/{entityType}/{entityId}")
+    MediaResponse uploadImages(
+            @PathVariable EntityType entityType,
+            @PathVariable long entityId,
+            @RequestParam("files") List<MultipartFile> files);
 }
