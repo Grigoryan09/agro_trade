@@ -1,4 +1,4 @@
-package am.agrotrade.common.dto.news.response;
+package am.agrotrade.common.dto.news;
 
 import am.agrotrade.common.dto.user.BaseUserInfoDto;
 
@@ -9,7 +9,6 @@ public record BaseNewsInfoDto(
         String title,
         String context,
         BaseUserInfoDto user,
-        LocalDateTime createAt
-
+        LocalDateTime createdAt
 ) {
 }

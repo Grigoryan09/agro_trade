@@ -5,5 +5,6 @@ public enum Role {
     BUYER,
     SELLER,
     MANAGER,
+    OPERATOR,
     ADMIN
 }
