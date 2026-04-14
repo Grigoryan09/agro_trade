@@ -4,6 +4,7 @@ import am.agrotrade.common.enums.ProductStatus;
 import am.agrotrade.core.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +20,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("sellerId") long sellerId,
             @Param("productId") long productId
     );
+
+    @EntityGraph(attributePaths = {"seller", "seller.organization"})
+    Page<Product> findAll(Pageable pageable);
 
     Page<Product> findAllBySellerId(Long sellerId, Pageable pageable);
 

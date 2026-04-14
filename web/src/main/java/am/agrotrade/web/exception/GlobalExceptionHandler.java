@@ -4,9 +4,11 @@ import am.agrotrade.common.dto.response.ErrorResponse;
 import am.agrotrade.common.dto.response.ValidationErrorResponse;
 import am.agrotrade.common.enums.ErrorCode;
 import am.agrotrade.core.exception.AlreadyExistsException;
+import am.agrotrade.core.exception.ChatCreationException;
 import am.agrotrade.core.exception.ImageUploadException;
 import am.agrotrade.core.exception.InvalidCredentialsException;
 import am.agrotrade.core.exception.InvalidFileException;
+import am.agrotrade.core.exception.InvalidOrderDataException;
 import am.agrotrade.core.exception.InvalidPasswordException;
 import am.agrotrade.core.exception.InvalidRefreshTokenException;
 import am.agrotrade.core.exception.InvalidUserRoleException;
@@ -204,6 +206,28 @@ public class GlobalExceptionHandler {
                 Instant.now()
         );
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InvalidOrderDataException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidOrderData(InvalidOrderDataException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                ErrorCode.PRICE_NULL,
+                Instant.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ChatCreationException.class)
+    public ResponseEntity<ErrorResponse> handleChatCreationException(ChatCreationException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                ErrorCode.CHAT_CREATION_FAILED,
+                Instant.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

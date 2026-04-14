@@ -75,7 +75,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<ProductInfoDto> findAllBySeller(long userId, Pageable pageable) {
         return productRepository.findAllBySellerId(userId, pageable)
                 .map(productMapper::toDto);
@@ -88,7 +87,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public ProductInfoDto findById(long productId) {
         return productRepository.findById(productId)
                 .map(productMapper::toDto)

@@ -51,3 +51,8 @@ logging:
     root: INFO
     org.hibernate.SQL: DEBUG
     com.example.studentportalspring.controller: DEBUG
+
+
+application:
+  config:
+    chat-service-url: http://localhost:8081

@@ -1,18 +1,22 @@
 package am.agrotrade.core.service;
 
+import am.agrotrade.common.dto.order.OrderDetailsDto;
 import am.agrotrade.common.dto.order.request.CreateOrderRequest;
-import am.agrotrade.core.model.Order;
-
-import java.awt.print.Pageable;
-import java.util.List;
+import am.agrotrade.common.dto.order.request.UpdateOrderStatusRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
 
-    void save(CreateOrderRequest orderRequest);
+    OrderDetailsDto save(long buyerId, CreateOrderRequest request);
 
-    List<Order> findAll(Pageable pageable);
+    OrderDetailsDto updateStatus(long managerId, UpdateOrderStatusRequest request);
 
-    List<Order> findAllByManagerId(long managerId, Pageable pageable);
+    void delete(long managerId, long orderId);
 
-    Order findById(long orderId);
+    Page<OrderDetailsDto> findAll(Pageable pageable);
+
+    OrderDetailsDto findById(long orderId);
+
+    Page<OrderDetailsDto> findByManagerId(long managerId, Pageable pageable);
 }

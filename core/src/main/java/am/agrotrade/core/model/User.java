@@ -19,16 +19,20 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
+@ToString(exclude = {"organization", "products", "news", "buyerOrders", "sellerOrders", "managerOrders", "refreshTokens"})
 @Table(name = "user")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -72,6 +76,9 @@ public class User {
     @OneToOne
     @JoinColumn(name = "document_id")
     private Document document;
+
+    @OneToOne(mappedBy = "user")
+    private Organization organization;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products;

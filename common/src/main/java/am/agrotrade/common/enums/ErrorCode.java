@@ -23,6 +23,10 @@ public enum ErrorCode {
 
     IMAGE_UPLOAD_FAILED,
 
+    PRICE_NULL,
+
+    CHAT_CREATION_FAILED,
+
     AN_UNEXPECTED_ERROR;
 
 }
