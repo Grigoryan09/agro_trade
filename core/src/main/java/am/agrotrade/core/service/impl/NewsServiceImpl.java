@@ -10,13 +10,13 @@ import am.agrotrade.core.repository.NewsRepository;
 import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.NewsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.module.ResolutionException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -67,9 +67,10 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    public Page<BaseNewsInfoDto> findAll(Pageable pageable) {
-        return newsRepository.findAll(pageable).
-                map(newsMapper::toDto);
+    public List<BaseNewsInfoDto> findAll(Pageable pageable) {
+        return newsRepository.findAll(pageable)
+                .map(newsMapper::toDto)
+                .getContent();
     }
 
     @Override
@@ -84,9 +85,10 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    public Page<BaseNewsInfoDto> findByAuthorId(long authorId, Pageable pageable) {
+    public List<BaseNewsInfoDto> findByAuthorId(long authorId, Pageable pageable) {
         return newsRepository.findByAuthorId(authorId, pageable)
-                .map(newsMapper::toDto);
+                .map(newsMapper::toDto)
+                .getContent();
     }
 }
 

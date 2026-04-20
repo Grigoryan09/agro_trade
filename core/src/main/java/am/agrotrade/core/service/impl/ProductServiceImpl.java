@@ -12,12 +12,12 @@ import am.agrotrade.core.repository.ProductRepository;
 import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -69,21 +69,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductInfoDto> findAllByStatusNot(Pageable pageable) {
+    public List<ProductInfoDto> findAllByStatusNot(Pageable pageable) {
         return productRepository.findAllByStatusNot(ProductStatus.DELETED, pageable)
-                .map(productMapper::toDto);
+                .map(productMapper::toDto)
+                .getContent();
     }
 
     @Override
-    public Page<ProductInfoDto> findAllBySeller(long userId, Pageable pageable) {
+    public List<ProductInfoDto> findAllBySeller(long userId, Pageable pageable) {
         return productRepository.findAllBySellerId(userId, pageable)
-                .map(productMapper::toDto);
+                .map(productMapper::toDto)
+                .getContent();
     }
 
     @Override
-    public Page<ProductInfoDto> findAll(Pageable pageable) {
+    public List<ProductInfoDto> findAll(Pageable pageable) {
         return productRepository.findAll(pageable)
-                .map(productMapper::toDto);
+                .map(productMapper::toDto)
+                .getContent();
     }
 
     @Override

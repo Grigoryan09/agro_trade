@@ -16,7 +16,6 @@ public class MediaV1Endpoint implements MediaV1API {
 
     private final MediaService mediaService;
 
-
     @Override
     public MediaResponse uploadImages(EntityType entityType, long entityId, List<MultipartFile> files) {
         return new MediaResponse(mediaService.saveMultipleMedia(files, entityId, entityType));

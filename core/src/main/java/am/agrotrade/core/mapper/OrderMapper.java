@@ -1,5 +1,6 @@
 package am.agrotrade.core.mapper;
 
+import am.agrotrade.common.dto.ChatDetailDto;
 import am.agrotrade.common.dto.order.OrderDetailsDto;
 import am.agrotrade.common.dto.order.request.UpdateOrderStatusRequest;
 import am.agrotrade.common.dto.product.ProductDetailsDto;
@@ -9,12 +10,13 @@ import am.agrotrade.common.dto.user.SellerDetailsDto;
 import am.agrotrade.core.model.Order;
 import am.agrotrade.core.model.Product;
 import am.agrotrade.core.model.User;
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
+
+import java.math.BigDecimal;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -42,6 +44,15 @@ public interface OrderMapper {
     @Mapping(target = "productName", source = "product.name")
     @Mapping(target = "productType", source = "product.category")
     ProductDetailsDto toProductDto(Product product);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "orderStatus", constant = "PENDING")
+    Order toEntity(User buyer,
+                   User seller,
+                   User manager,
+                   Product product,
+                   long quantity,
+                   BigDecimal totalPrice);
 
     @Mapping(target = "orderStatus", source = "orderStatus")
     void updateOrderFromRequest(UpdateOrderStatusRequest request, @MappingTarget Order order);

@@ -2,5 +2,7 @@ package am.agrotrade.common.dto.news.response;
 
 import am.agrotrade.common.dto.news.BaseNewsInfoDto;
 
-public record NewsResponse(BaseNewsInfoDto baseNewsInfoDto) {
+import java.util.List;
+
+public record NewsResponse(List<BaseNewsInfoDto> baseNewsInfoDto) {
 }

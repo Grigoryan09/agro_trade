@@ -1,10 +1,15 @@
 package am.agrotrade.core.repository;
 
 import am.agrotrade.core.model.User;
+import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -17,22 +22,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmailIgnoreCase(String email);
 
-    @Query(value = """
-    SELECT u.id
-    FROM "user" u
-    WHERE u.id = (
-        SELECT u2.id
-        FROM "user" u2
-        LEFT JOIN "order" o ON o.manager_id = u2.id
-        JOIN user_roles ur ON ur.user_id = u2.id
-        WHERE ur.role_name = :role
-        GROUP BY u2.id
-        ORDER BY COUNT(o.id) ASC
-        LIMIT 1
-    )
-    FOR UPDATE SKIP LOCKED
-""", nativeQuery = true)
-    Long findFreeManagerForUpdate(@Param("role") String role);
+    @Query("""
+                SELECT u
+                FROM User u
+                JOIN u.roles r
+                WHERE r = :role
+                ORDER BY u.activeOrdersCount ASC
+            """)
+    List<User> findCandidatesForUpdate(@Param("role") String role, Pageable pageable);
 
-
+    @Modifying
+    @Query("""
+                UPDATE User u
+                SET u.activeOrdersCount = u.activeOrdersCount + 1
+                WHERE u.id = :id
+            """)
+    void incrementOrders(@Param("id") Long id);
 }

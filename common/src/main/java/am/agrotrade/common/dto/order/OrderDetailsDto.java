@@ -1,6 +1,5 @@
 package am.agrotrade.common.dto.order;
 
-import am.agrotrade.common.dto.ChatDetailDto;
 import am.agrotrade.common.dto.product.ProductDetailsDto;
 import am.agrotrade.common.dto.user.BuyerDetailsDto;
 import am.agrotrade.common.dto.user.ManagerDetailsDto;
@@ -17,7 +16,6 @@ public record OrderDetailsDto(
         SellerDetailsDto sellerDetailsDto,
         ManagerDetailsDto managerDetailsDto,
         ProductDetailsDto productDetailsDto,
-        ChatDetailDto chatDetailDto,
         long quantity,
         BigDecimal totalPrice,
         OrderStatus orderStatus

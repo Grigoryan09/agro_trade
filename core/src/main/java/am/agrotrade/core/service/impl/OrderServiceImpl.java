@@ -1,14 +1,11 @@
 package am.agrotrade.core.service.impl;
 
-import am.agrotrade.common.dto.ChatDetailDto;
+import am.agrotrade.common.dto.ChatCreatedEvent;
 import am.agrotrade.common.dto.order.OrderDetailsDto;
 import am.agrotrade.common.dto.order.request.CreateOrderRequest;
 import am.agrotrade.common.dto.order.request.UpdateOrderStatusRequest;
-import am.agrotrade.common.dto.request.CreateChatRequest;
-import am.agrotrade.common.dto.response.ChatResponse;
-import am.agrotrade.common.enums.ChatType;
 import am.agrotrade.common.enums.OrderStatus;
-import am.agrotrade.core.exception.ChatCreationException;
+import am.agrotrade.common.enums.Role;
 import am.agrotrade.core.exception.InvalidOrderDataException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.mapper.OrderMapper;
@@ -21,12 +18,11 @@ import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -40,48 +36,49 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-    private final RestTemplate restTemplate;
-
-    @Value("${application.config.chat-service-url}")
-    private String chatServiceUrl;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
     public OrderDetailsDto save(long buyerId, CreateOrderRequest request) {
+
         User buyer = userRepository.findById(buyerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Buyer not found"));
+
         User seller = userRepository.findById(request.sellerId())
                 .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+
         Product product = productRepository.findById(request.productId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        User manager = userRepository.findById(
-                        userRepository.findFreeManagerForUpdate("MANAGER"))
-                .orElseThrow(() -> new ResourceNotFoundException("Manager not found"));
+
+        User manager = userRepository.findCandidatesForUpdate(
+                        Role.MANAGER.name(),
+                        PageRequest.of(0, 1)
+                )
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("No manager found"));
+
+        userRepository.incrementOrders(manager.getId());
 
         BigDecimal totalPrice = calculateTotalPrice(request.price(), request.quantity());
 
-        Order order = createOrderEntity(buyer,
-                seller,
-                manager,
-                product,
-                request.quantity(),
-                totalPrice);
-
-        ChatDetailDto chatDetailDto = createOrderChat(buyer.getId(), seller.getId(), manager.getId());
-
-        order.setChatId(chatDetailDto.getId());
-        Order savedOrder = orderRepository.save(order);
-
-        return new OrderDetailsDto(
-                orderMapper.toBuyerDto(savedOrder.getBuyer()),
-                orderMapper.toSellerDto(savedOrder.getSeller()),
-                orderMapper.toManagerDto(savedOrder.getManager()),
-                orderMapper.toProductDto(savedOrder.getProduct()),
-                chatDetailDto,
-                savedOrder.getQuantity(),
-                savedOrder.getTotalPrice(),
-                savedOrder.getOrderStatus()
+        Order order = orderMapper.toEntity(
+                buyer, seller, manager, product,
+                request.quantity(), totalPrice
         );
+
+        Order saved = orderRepository.save(order);
+
+        eventPublisher.publishEvent(
+                new ChatCreatedEvent(
+                        saved.getId(),
+                        buyer.getId(),
+                        seller.getId(),
+                        manager.getId()
+                )
+        );
+        return orderMapper.toDto(saved);
     }
 
     @Override
@@ -98,18 +95,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void delete(long managerId, long orderId) {
-        Order order = orderRepository.findByManagerIdAndOrderId(managerId, orderId)
+        Order order = orderRepository.findByIdAndManagerId(orderId, managerId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Order not found for ID: %d ".formatted(orderId)
                 ));
-
         order.setOrderStatus(OrderStatus.DELETED);
     }
 
     @Override
-    public Page<OrderDetailsDto> findAll(Pageable pageable) {
-        return orderRepository.findAll(pageable).
-                map(orderMapper::toDto);
+    public List<OrderDetailsDto> findAll(Pageable pageable) {
+        return orderRepository.findAll(pageable)
+                .map(orderMapper::toDto)
+                .toList();
     }
 
     @Override
@@ -122,48 +119,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderDetailsDto> findByManagerId(long managerId, Pageable pageable) {
+    public List<OrderDetailsDto> findByManagerId(long managerId, Pageable pageable) {
         return orderRepository.findAllByManagerId(managerId, pageable)
-                .map(orderMapper::toDto);
+                .map(orderMapper::toDto)
+                .toList();
     }
 
     private BigDecimal calculateTotalPrice(BigDecimal price, long quantity) {
-
-        if (price == null) {
-            throw new InvalidOrderDataException("Price cannot be null");
-        }
-
         if (quantity <= 0) {
             throw new InvalidOrderDataException("Quantity must be greater than 0");
         }
-
         return price.multiply(BigDecimal.valueOf(quantity));
-    }
-
-    private Order createOrderEntity(User buyer, User seller, User manager, Product product, long quantity, BigDecimal totalPrice) {
-        Order order = new Order();
-        order.setBuyer(buyer);
-        order.setSeller(seller);
-        order.setManager(manager);
-        order.setProduct(product);
-        order.setQuantity(quantity);
-        order.setTotalPrice(totalPrice);
-        order.setOrderStatus(OrderStatus.PENDING);
-        return order;
-    }
-
-    private ChatDetailDto createOrderChat(Long buyerId, Long sellerId, Long managerId) {
-        List<Long> participants = List.of(buyerId, sellerId, managerId);
-        CreateChatRequest chatRequest = new CreateChatRequest(participants, ChatType.GROUP);
-
-        String url = chatServiceUrl + "/chat-service/api/v1/chats";
-        ChatResponse response = restTemplate.postForObject(url, chatRequest, ChatResponse.class);
-
-        if (response == null || response.chatDetailDto() == null) {
-            throw new ChatCreationException("Chat service returned empty response");
-        }
-
-        return response.chatDetailDto();
-
     }
 }

@@ -53,6 +53,12 @@ logging:
     com.example.studentportalspring.controller: DEBUG
 
 
-application:
-  config:
-    chat-service-url: http://localhost:8081
+client:
+  chat-service:
+    url: http://localhost:8081
+  notification:
+    url: http://localhost:8082
+
+rest:
+  connect-timeout: 5000
+  read-timeout: 10000

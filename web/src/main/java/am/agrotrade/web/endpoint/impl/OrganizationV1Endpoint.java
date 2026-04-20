@@ -18,30 +18,27 @@ public class OrganizationV1Endpoint implements OrganizationV1API {
     private final OrganizationService orgService;
 
     @Override
-    public List<OrganizationDetailsResponse> getAll(UserPrincipal userPrincipal) {
-        return orgService.getAllByUserId(userPrincipal.getId())
-                .stream()
-                .map(OrganizationDetailsResponse::new)
-                .toList();
+    public OrganizationDetailsResponse getAll(long userid) {
+        return new OrganizationDetailsResponse(orgService.getAllByUserId(userid));
     }
 
     @Override
     public OrganizationDetailsResponse getById(UserPrincipal user, long id) {
-        return new OrganizationDetailsResponse(orgService.getById(user.getId(), id));
+        return new OrganizationDetailsResponse(List.of(orgService.getById(user.getId(), id)));
     }
 
     @Override
-    public OrganizationDetailsResponse create(UserPrincipal user, CreateOrganizationRequest request) {
-        return new OrganizationDetailsResponse(orgService.create(user.getId(), request));
+    public OrganizationDetailsResponse create(long userId, CreateOrganizationRequest request) {
+        return new OrganizationDetailsResponse(List.of(orgService.create(userId, request)));
     }
 
     @Override
-    public OrganizationDetailsResponse update(UserPrincipal user, long id, UpdateOrganizationRequest request) {
-        return new OrganizationDetailsResponse(orgService.update(user.getId(), id, request));
+    public OrganizationDetailsResponse update(long userId, long id, UpdateOrganizationRequest request) {
+        return new OrganizationDetailsResponse(List.of(orgService.update(userId, id, request)));
     }
 
     @Override
-    public void delete(UserPrincipal user, long id) {
-        orgService.delete(id, user.getId());
+    public void delete(long userId, long id) {
+        orgService.delete(userId, id);
     }
 }

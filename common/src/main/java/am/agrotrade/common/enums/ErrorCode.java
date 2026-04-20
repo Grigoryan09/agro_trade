@@ -27,6 +27,8 @@ public enum ErrorCode {
 
     CHAT_CREATION_FAILED,
 
+    SERVICE_UNAVAILABLE,
+
     AN_UNEXPECTED_ERROR;
 
 }

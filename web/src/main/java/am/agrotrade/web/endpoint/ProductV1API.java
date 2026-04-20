@@ -4,8 +4,15 @@ import am.agrotrade.common.dto.product.request.CreateProductRequest;
 import am.agrotrade.common.dto.product.request.UpdateProductRequest;
 import am.agrotrade.common.dto.product.response.ProductInfoResponse;
 import am.agrotrade.web.infrastructure.annotation.CurrentUserId;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,85 +23,77 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * REST API v1 for managing products in AgroTrade service.
- *
- * <p>Provides endpoints for product CRUD operations: listing, retrieval, creation, update, and deletion.
- */
+@Tag(name = "Product V1", description = "Product management endpoints.")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/agro-trade-service/api/v1/products")
 public interface ProductV1API {
 
-    /**
-     * Retrieves a paginated list of all active products (excluding deleted ones).
-     *
-     * @param pageable pagination and sorting parameters (page, size, sort)
-     * @return page of {@link ProductInfoResponse}
-     */
+    @Operation(summary = "List products", description = "Returns a paginated list of active products.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Products retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    })
     @GetMapping
-    Page<ProductInfoResponse> getAll(Pageable pageable);
+    ProductInfoResponse getAll(@ParameterObject Pageable pageable);
 
-    /**
-     * Retrieves a paginated list of products belonging to the currently authenticated seller.
-     *
-     * @param sellerId ID of the currently authenticated seller (automatically resolved via {@link CurrentUserId})
-     * @param pageable pagination and sorting parameters
-     * @return page of {@link ProductInfoResponse} for the seller's products
-     */
+    @Operation(summary = "List my products", description = "Returns products created by the authenticated seller.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Seller products retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    })
     @GetMapping("/my")
-    Page<ProductInfoResponse> getAllBySeller(
-            @CurrentUserId long sellerId,
-            Pageable pageable
+    ProductInfoResponse getAllBySeller(
+            @Parameter(hidden = true) @CurrentUserId long sellerId,
+            @ParameterObject Pageable pageable
     );
 
-    /**
-     * Retrieves detailed information about a specific product by its ID.
-     *
-     * @param id the ID of the product
-     * @return {@link ProductInfoResponse} containing product details
-     */
+    @Operation(summary = "Get product by id", description = "Returns detailed information about a single product.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
     @GetMapping("/{id}")
     ProductInfoResponse getById(
-            @PathVariable long id
+            @Parameter(description = "Product identifier", example = "1") @PathVariable long id
     );
 
-    /**
-     * Creates a new product for the currently authenticated seller.
-     *
-     * @param sellerId ID of the currently authenticated seller
-     * @param request  request body containing product creation data
-     * @return the created {@link ProductInfoResponse}
-     */
+    @Operation(summary = "Create product", description = "Creates a product for the authenticated seller.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request body", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    })
     @PostMapping
     ProductInfoResponse create(
-            @CurrentUserId long sellerId,
+            @Parameter(hidden = true) @CurrentUserId long sellerId,
             @Valid @RequestBody CreateProductRequest request
     );
 
-    /**
-     * Updates an existing product of the currently authenticated seller.
-     *
-     * @param sellerId ID of the currently authenticated seller
-     * @param id       ID of the product to update
-     * @param request  request body containing updated product data
-     * @return the updated {@link ProductInfoResponse}
-     */
+    @Operation(summary = "Update product", description = "Updates a product owned by the authenticated seller.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request body", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
     @PutMapping("/{id}")
     ProductInfoResponse update(
-            @CurrentUserId long sellerId,
-            @PathVariable long id,
+            @Parameter(hidden = true) @CurrentUserId long sellerId,
+            @Parameter(description = "Product identifier", example = "1") @PathVariable long id,
             @Valid @RequestBody UpdateProductRequest request
     );
 
-    /**
-     * Deletes a product belonging to the currently authenticated seller (soft delete).
-     *
-     * @param sellerId ID of the currently authenticated seller
-     * @param id       ID of the product to delete
-     */
+    @Operation(summary = "Delete product", description = "Deletes a product owned by the authenticated seller.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product deleted successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
     @DeleteMapping("/{id}")
     void delete(
-            @CurrentUserId long sellerId,
-            @PathVariable long id
+            @Parameter(hidden = true) @CurrentUserId long sellerId,
+            @Parameter(description = "Product identifier", example = "1") @PathVariable long id
     );
 }

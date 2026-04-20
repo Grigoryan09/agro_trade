@@ -73,6 +73,8 @@ public class User {
 
     private boolean active;
 
+    private long activeOrdersCount;
+
     @OneToOne
     @JoinColumn(name = "document_id")
     private Document document;
