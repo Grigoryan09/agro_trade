@@ -1,5 +1,7 @@
 package am.agrotrade.common.dto.user.request;
 
+import am.agrotrade.common.dto.NotificationSettingsDTO;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
@@ -24,6 +26,10 @@ public record UpdateUserRequest(
         String address,
 
         @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Phone number must be between 10 and 15 digits")
-        String phoneNumber
+        String phoneNumber,
+
+        @Valid
+        NotificationSettingsDTO notificationSettingsDTO
+
 ) {
 }

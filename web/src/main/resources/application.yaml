@@ -51,3 +51,14 @@ logging:
     root: INFO
     org.hibernate.SQL: DEBUG
     com.example.studentportalspring.controller: DEBUG
+
+
+client:
+  chat-service:
+    url: http://localhost:8081
+  notification:
+    url: http://localhost:8082
+
+rest:
+  connect-timeout: 5000
+  read-timeout: 10000

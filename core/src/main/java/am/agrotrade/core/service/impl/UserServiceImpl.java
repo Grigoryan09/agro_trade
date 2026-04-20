@@ -1,8 +1,10 @@
 package am.agrotrade.core.service.impl;
 
+import am.agrotrade.common.dto.request.SendNotificationSettingsRequest;
 import am.agrotrade.common.dto.user.BaseUserInfoDto;
 import am.agrotrade.common.dto.user.request.ChangePasswordRequest;
 import am.agrotrade.common.dto.user.request.UpdateUserRequest;
+import am.agrotrade.core.client.NotificationClient;
 import am.agrotrade.core.exception.InvalidPasswordException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.mapper.UserMapper;
@@ -10,7 +12,6 @@ import am.agrotrade.core.model.User;
 import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.MediaService;
 import am.agrotrade.core.service.UserService;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final MediaService mediaService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final NotificationClient notificationClient;
 
 
     @Override
@@ -41,6 +43,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         userMapper.updateUserFromRequest(request, user);
+
+        notificationClient.sendNotificationSettings(
+                new SendNotificationSettingsRequest(
+                        request.notificationSettingsDTO()));
 
         return userMapper.toBaseUserInfoDto(user);
     }

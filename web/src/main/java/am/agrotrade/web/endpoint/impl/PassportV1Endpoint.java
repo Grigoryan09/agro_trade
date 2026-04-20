@@ -8,6 +8,8 @@ import am.agrotrade.web.endpoint.PassportV1API;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Component
 public class PassportV1Endpoint implements PassportV1API {
@@ -15,22 +17,22 @@ public class PassportV1Endpoint implements PassportV1API {
     private final PassportService passportService;
 
     @Override
-    public PassportInfoResponse get(UserPrincipal user) {
-        return new PassportInfoResponse(passportService.getPassport(user.getId()));
+    public PassportInfoResponse get(long userId) {
+        return new PassportInfoResponse(List.of(passportService.getPassport(userId)));
     }
 
     @Override
-    public PassportInfoResponse create(UserPrincipal user, CreateAndUpdatePassportRequest request) {
-        return new PassportInfoResponse(passportService.add(user.getId(), request));
+    public PassportInfoResponse create(long userId, CreateAndUpdatePassportRequest request) {
+        return new PassportInfoResponse(List.of(passportService.add(userId, request)));
     }
 
     @Override
-    public PassportInfoResponse update(UserPrincipal user, CreateAndUpdatePassportRequest request) {
-        return new PassportInfoResponse(passportService.update(user.getId(), request));
+    public PassportInfoResponse update(long userId, CreateAndUpdatePassportRequest request) {
+        return new PassportInfoResponse(List.of(passportService.update(userId, request)));
     }
 
     @Override
-    public void delete(UserPrincipal user) {
-        passportService.delete(user.getId());
+    public void delete(long userId) {
+        passportService.delete(userId);
     }
 }

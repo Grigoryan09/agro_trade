@@ -3,75 +3,72 @@ package am.agrotrade.core.service;
 import am.agrotrade.common.dto.product.ProductInfoDto;
 import am.agrotrade.common.dto.product.request.CreateProductRequest;
 import am.agrotrade.common.dto.product.request.UpdateProductRequest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
- * Service interface for managing products in AgroTrade application.
- *
- * <p>Provides business logic for product CRUD operations, including creation,
- * updating, deletion and various search methods with pagination support.
+ * Manages product lifecycle operations and product queries.
  */
 public interface ProductService {
 
     /**
-     * Creates a new product for the specified seller.
+     * Creates a product for the specified seller.
      *
-     * @param sellerId ID of the seller who creates the product
-     * @param product  request containing product details
-     * @return {@link ProductInfoDto} of the created product
+     * @param sellerId seller identifier
+     * @param product product payload
+     * @return created product data
      */
     ProductInfoDto create(long sellerId, CreateProductRequest product);
 
     /**
-     * Updates an existing product of the specified seller.
+     * Updates a product owned by the specified seller.
      *
-     * @param sellerId  ID of the seller who owns the product
-     * @param productId ID of the product to update
-     * @param request   request containing updated product data
-     * @return {@link ProductInfoDto} of the updated product
+     * @param sellerId seller identifier
+     * @param productId product identifier
+     * @param request updated product payload
+     * @return updated product data
      */
     ProductInfoDto update(long sellerId, long productId, UpdateProductRequest request);
 
     /**
-     * Deletes a product (usually soft delete) for the specified seller.
+     * Deletes a product owned by the specified seller.
      *
-     * @param sellerId  ID of the seller who owns the product
-     * @param productId ID of the product to delete
+     * @param sellerId seller identifier
+     * @param productId product identifier
      */
     void delete(long sellerId, long productId);
 
     /**
-     * Retrieves all products excluding deleted ones (soft delete).
+     * Returns all products excluding products with the filtered status.
      *
-     * @param pageable pagination and sorting parameters
-     * @return paginated list of {@link ProductInfoDto}
+     * @param pageable paging parameters
+     * @return product list
      */
-    Page<ProductInfoDto> findAllByStatusNot(Pageable pageable);
+    List<ProductInfoDto> findAllByStatusNot(Pageable pageable);
 
     /**
-     * Retrieves all products belonging to a specific seller.
+     * Returns products created by the specified seller.
      *
-     * @param sellerId ID of the seller
-     * @param pageable pagination and sorting parameters
-     * @return paginated list of {@link ProductInfoDto}
+     * @param sellerId seller identifier
+     * @param pageable paging parameters
+     * @return seller product list
      */
-    Page<ProductInfoDto> findAllBySeller(long sellerId, Pageable pageable);
+    List<ProductInfoDto> findAllBySeller(long sellerId, Pageable pageable);
 
     /**
-     * Retrieves all products with pagination.
+     * Returns all products.
      *
-     * @param pageable pagination and sorting parameters
-     * @return paginated list of {@link ProductInfoDto}
+     * @param pageable paging parameters
+     * @return product list
      */
-    Page<ProductInfoDto> findAll(Pageable pageable);
+    List<ProductInfoDto> findAll(Pageable pageable);
 
     /**
-     * Retrieves a product by its ID.
+     * Returns a product by identifier.
      *
-     * @param productId ID of the product
-     * @return {@link ProductInfoDto} containing product details
-     * @throws RuntimeException if product not found
+     * @param productId product identifier
+     * @return product data
      */
     ProductInfoDto findById(long productId);
 }

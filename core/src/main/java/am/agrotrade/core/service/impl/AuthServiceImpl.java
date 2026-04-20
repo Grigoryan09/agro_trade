@@ -8,7 +8,9 @@ import am.agrotrade.common.dto.user.ResendCodeDto;
 import am.agrotrade.common.dto.user.VerifyDto;
 import am.agrotrade.common.dto.user.request.LoginRequest;
 import am.agrotrade.common.dto.user.request.RegisterRequest;
+import am.agrotrade.common.enums.EmailType;
 import am.agrotrade.common.enums.Role;
+import am.agrotrade.core.client.NotificationClient;
 import am.agrotrade.core.exception.InvalidCredentialsException;
 import am.agrotrade.core.exception.InvalidVerificationCodeException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
@@ -25,18 +27,23 @@ import am.agrotrade.core.security.UserPrincipal;
 import am.agrotrade.core.service.AuthService;
 import am.agrotrade.core.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static am.agrotrade.core.util.NotificationRequestFactory.createNotificationRequest;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
@@ -45,9 +52,10 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
-
+    private final NotificationClient notificationClient;
 
     @Override
+    @Transactional
     public RegisterDto register(RegisterRequest request) {
         if (userRepository.existsByUsernameIgnoreCase(request.username())) {
             throw new UserAlreadyExistsException("Username is already taken");
@@ -56,16 +64,16 @@ public class AuthServiceImpl implements AuthService {
             throw new UserAlreadyExistsException("Email is already taken");
         }
 
-        String verificationCode = generateVerificationCode();
-
         User user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(List.of(Role.BUYER));
         user.setActive(false);
-        user.setVerificationCode(verificationCode);
+        user.setVerificationCode(generateVerificationCode());
         user.setVerificationExpiration(LocalDateTime.now().plusMinutes(15));
 
-        userRepository.save(user);
+        notificationClient.sendNotification(createNotificationRequest(
+                userRepository.save(user),
+                EmailType.VERIFY));
 
         return new RegisterDto(
                 true,
@@ -84,7 +92,6 @@ public class AuthServiceImpl implements AuthService {
         if (!code.equals(user.getVerificationCode())) {
             throw new InvalidVerificationCodeException("Invalid verification code");
         }
-
 
         if (user.getVerificationExpiration().isBefore(LocalDateTime.now())) {
             throw new VerificationCodeExpiredException("Verification code has expired. Please request a new one.");
@@ -112,7 +119,9 @@ public class AuthServiceImpl implements AuthService {
 
         setNewVerificationCode(user);
 
-        userRepository.save(user);
+        notificationClient.sendNotification(createNotificationRequest(
+                userRepository.save(user),
+                EmailType.VERIFY));
 
         return new ResendCodeDto(
                 "New verification code has been sent to your email",
@@ -166,7 +175,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void delete(long userId) {
-
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setActive(false);
     }
 
     @Override

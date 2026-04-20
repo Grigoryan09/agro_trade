@@ -1,4 +1,4 @@
-package am.agrotrade.common.dto.order.response;
+package am.agrotrade.common.dto.order;
 
 import java.util.List;
 

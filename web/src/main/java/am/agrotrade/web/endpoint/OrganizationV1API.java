@@ -5,8 +5,14 @@ import am.agrotrade.common.dto.organization.request.UpdateOrganizationRequest;
 import am.agrotrade.common.dto.organization.response.OrganizationDetailsResponse;
 import am.agrotrade.core.security.UserPrincipal;
 import am.agrotrade.web.infrastructure.annotation.CurrentUserId;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,77 +22,70 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
-/**
- * REST API for managing user organizations in the Agro Trade system.
- * This interface defines the version 1 endpoints for CRUD operations on organizations.
- */
+@Tag(name = "Organization V1", description = "Organization management endpoints.")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/agro-trade-service/api/v1/user/organizations")
 public interface OrganizationV1API {
 
-    /**
-     * Retrieves all organizations associated with the currently authenticated user.
-     *
-     * @param userPrincipal the authenticated user's details
-     * @return a list of organizations belonging to the user
-     */
+    @Operation(summary = "List organizations", description = "Returns organizations available to the authenticated user.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Organizations retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    })
     @GetMapping
-    List<OrganizationDetailsResponse> getAll(
-            @AuthenticationPrincipal UserPrincipal userPrincipal
+    OrganizationDetailsResponse getAll(
+            @Parameter(hidden = true) @CurrentUserId long userId
     );
 
-    /**
-     * Retrieves specific organization details by its unique identifier.
-     *
-     * @param userPrincipal the authenticated user's details
-     * @param id            the unique identifier of the organization
-     * @return the details of the requested organization
-     */
+    @Operation(summary = "Get organization by id", description = "Returns details of a specific organization.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Organization found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Organization not found", content = @Content)
+    })
     @GetMapping("/{id}")
     OrganizationDetailsResponse getById(
-            @CurrentUserId UserPrincipal userPrincipal,
-            @PathVariable long id
+            @Parameter(hidden = true) @CurrentUserId UserPrincipal userPrincipal,
+            @Parameter(description = "Organization identifier", example = "1") @PathVariable long id
     );
 
-    /**
-     * Creates a new organization for the authenticated user.
-     *
-     * @param userPrincipal the authenticated user's details
-     * @param request       the data required to create a new organization
-     * @return the details of the newly created organization
-     */
+    @Operation(summary = "Create organization", description = "Creates an organization for the authenticated user.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Organization created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request body", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    })
     @PostMapping
     OrganizationDetailsResponse create(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @Parameter(hidden = true) @CurrentUserId long userId,
             @Valid @RequestBody CreateOrganizationRequest request
     );
 
-    /**
-     * Updates an existing organization's information.
-     *
-     * @param userPrincipal the authenticated user's details
-     * @param id            the unique identifier of the organization to update
-     * @param request       the updated organization data
-     * @return the details of the updated organization
-     */
+    @Operation(summary = "Update organization", description = "Updates an existing organization owned by the authenticated user.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Organization updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request body", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Organization not found", content = @Content)
+    })
     @PutMapping("/{id}")
     OrganizationDetailsResponse update(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @PathVariable long id,
+            @Parameter(hidden = true) @CurrentUserId long userId,
+            @Parameter(description = "Organization identifier", example = "1") @PathVariable long id,
             @Valid @RequestBody UpdateOrganizationRequest request
     );
 
-    /**
-     * Deletes an organization from the system.
-     *
-     * @param userPrincipal the authenticated user's details
-     * @param id            the unique identifier of the organization to delete
-     */
+    @Operation(summary = "Delete organization", description = "Deletes an organization owned by the authenticated user.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Organization deleted successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Organization not found", content = @Content)
+    })
+
     @DeleteMapping("/{id}")
     void delete(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @PathVariable long id
+            @Parameter(hidden = true) @CurrentUserId long userId,
+            @Parameter(description = "Organization identifier", example = "1") @PathVariable long id
     );
 }

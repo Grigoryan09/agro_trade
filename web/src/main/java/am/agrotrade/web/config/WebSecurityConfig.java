@@ -26,6 +26,9 @@ public class WebSecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/agro-trade-service/api/v1/auth/**").permitAll()
+                        .requestMatchers("/auth/token/**").permitAll()
+                        .requestMatchers("/agro-trade-service/api/v1/media/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                         .requestMatchers("/media/**").permitAll()
                         .anyRequest().authenticated()
                 )
