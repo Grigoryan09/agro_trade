@@ -8,9 +8,9 @@ import am.agrotrade.common.dto.user.ResendCodeDto;
 import am.agrotrade.common.dto.user.VerifyDto;
 import am.agrotrade.common.dto.user.request.LoginRequest;
 import am.agrotrade.common.dto.user.request.RegisterRequest;
-import am.agrotrade.common.enums.EmailType;
 import am.agrotrade.common.enums.Role;
-import am.agrotrade.core.client.NotificationClient;
+import am.agrotrade.common.event.UserRegisteredEvent;
+import am.agrotrade.common.event.VerificationCodeResentEvent;
 import am.agrotrade.core.exception.InvalidCredentialsException;
 import am.agrotrade.core.exception.InvalidVerificationCodeException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
@@ -28,6 +28,7 @@ import am.agrotrade.core.service.AuthService;
 import am.agrotrade.core.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,8 +39,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static am.agrotrade.core.util.NotificationRequestFactory.createNotificationRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
-    private final NotificationClient notificationClient;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -71,9 +70,16 @@ public class AuthServiceImpl implements AuthService {
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationExpiration(LocalDateTime.now().plusMinutes(15));
 
-        notificationClient.sendNotification(createNotificationRequest(
-                userRepository.save(user),
-                EmailType.VERIFY));
+        User savedUser = userRepository.save(user);
+
+        eventPublisher.publishEvent(new UserRegisteredEvent(
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getVerificationCode(),
+                request.emailEnabled(),
+                request.smsEnabled(),
+                request.inAppEnabled()
+        ));
 
         return new RegisterDto(
                 true,
@@ -119,9 +125,10 @@ public class AuthServiceImpl implements AuthService {
 
         setNewVerificationCode(user);
 
-        notificationClient.sendNotification(createNotificationRequest(
-                userRepository.save(user),
-                EmailType.VERIFY));
+        eventPublisher.publishEvent(new VerificationCodeResentEvent(
+                user.getId(),
+                user.getVerificationCode()
+        ));
 
         return new ResendCodeDto(
                 "New verification code has been sent to your email",
@@ -183,11 +190,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public List<BaseUserInfoDto> findAll(Pageable pageable) {
         return List.of();
-    }
-
-    @Override
-    public long findUserIdByRole(String role) {
-        return 0;
     }
 
     private String generateVerificationCode() {

@@ -46,9 +46,6 @@
             <column name="active" type="bool" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
-            <column name="active_orders_count" type="bigint">
-                <constraints nullable="true"/>
-            </column>
             <column name="birth_date" type="date">
                 <constraints nullable="true"/>
             </column>

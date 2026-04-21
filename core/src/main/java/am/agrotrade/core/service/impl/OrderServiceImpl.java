@@ -1,11 +1,12 @@
 package am.agrotrade.core.service.impl;
 
-import am.agrotrade.common.dto.ChatCreatedEvent;
 import am.agrotrade.common.dto.order.OrderDetailsDto;
 import am.agrotrade.common.dto.order.request.CreateOrderRequest;
 import am.agrotrade.common.dto.order.request.UpdateOrderStatusRequest;
 import am.agrotrade.common.enums.OrderStatus;
 import am.agrotrade.common.enums.Role;
+import am.agrotrade.common.event.ChatCreatedEvent;
+import am.agrotrade.common.event.NotificationOrderCreatedEvent;
 import am.agrotrade.core.exception.InvalidOrderDataException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.mapper.OrderMapper;
@@ -38,6 +39,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final ApplicationEventPublisher eventPublisher;
 
+    private static final String ORDER_URL = "http://localhost:8080/agro-trade-service/api/v1/order/";
+
     @Override
     @Transactional
     public OrderDetailsDto save(long buyerId, CreateOrderRequest request) {
@@ -52,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         User manager = userRepository.findCandidatesForUpdate(
-                        Role.MANAGER.name(),
+                        Role.MANAGER,
                         PageRequest.of(0, 1)
                 )
                 .stream()
@@ -78,6 +81,16 @@ public class OrderServiceImpl implements OrderService {
                         manager.getId()
                 )
         );
+
+        eventPublisher.publishEvent(
+                new NotificationOrderCreatedEvent(
+                        seller.getId(),
+                        manager.getId(),
+                        product.getName(),
+                        ORDER_URL + saved.getId()
+                )
+        );
+
         return orderMapper.toDto(saved);
     }
 

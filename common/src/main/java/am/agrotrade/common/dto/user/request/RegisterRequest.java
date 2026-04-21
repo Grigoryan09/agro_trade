@@ -43,7 +43,16 @@ public record RegisterRequest(
 
         @NotBlank(message = "Password is required")
         @Size(min = 6, message = "Password must be at least 6 characters")
-        String password
+        String password,
+
+        @NotNull(message = "Email setting is required")
+        Boolean emailEnabled,
+
+        @NotNull(message = "SMS setting is required")
+        Boolean smsEnabled,
+
+        @NotNull(message = "In-app setting is required")
+        Boolean inAppEnabled
 ) {
 }
 

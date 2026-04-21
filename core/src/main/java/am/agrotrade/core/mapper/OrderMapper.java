@@ -1,6 +1,5 @@
 package am.agrotrade.core.mapper;
 
-import am.agrotrade.common.dto.ChatDetailDto;
 import am.agrotrade.common.dto.order.OrderDetailsDto;
 import am.agrotrade.common.dto.order.request.UpdateOrderStatusRequest;
 import am.agrotrade.common.dto.product.ProductDetailsDto;
@@ -47,6 +46,10 @@ public interface OrderMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "orderStatus", constant = "PENDING")
+    @Mapping(target = "product", source = "product")
+    @Mapping(target = "buyer", source = "buyer")
+    @Mapping(target = "seller", source = "seller")
+    @Mapping(target = "manager", source = "manager")
     Order toEntity(User buyer,
                    User seller,
                    User manager,
