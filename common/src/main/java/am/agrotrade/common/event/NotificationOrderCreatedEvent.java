@@ -1,8 +1,8 @@
 package am.agrotrade.common.event;
 
 public record NotificationOrderCreatedEvent(
-        Long sellerId,
-        Long managerId,
+        long sellerId,
+        long managerId,
         String productName,
         String orderUrl
 ) {}

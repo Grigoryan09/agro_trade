@@ -1,18 +1,18 @@
 package am.agrotrade.core.service.impl;
 
-import am.agrotrade.common.dto.request.SendNotificationSettingsRequest;
 import am.agrotrade.common.dto.user.BaseUserInfoDto;
 import am.agrotrade.common.dto.user.request.ChangePasswordRequest;
 import am.agrotrade.common.dto.user.request.UpdateUserRequest;
-import am.agrotrade.core.client.NotificationClient;
 import am.agrotrade.core.exception.InvalidPasswordException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
+import am.agrotrade.core.mapper.IntegrationEventMapper;
 import am.agrotrade.core.mapper.UserMapper;
 import am.agrotrade.core.model.User;
 import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.MediaService;
 import am.agrotrade.core.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,8 @@ public class UserServiceImpl implements UserService {
     private final MediaService mediaService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final NotificationClient notificationClient;
+    private final IntegrationEventMapper integrationEventMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
 
     @Override
@@ -44,9 +45,9 @@ public class UserServiceImpl implements UserService {
 
         userMapper.updateUserFromRequest(request, user);
 
-        notificationClient.sendNotificationSettings(
-                new SendNotificationSettingsRequest(
-                        request.notificationSettingsDTO()));
+        eventPublisher.publishEvent(
+                integrationEventMapper.toNotificationSettingsEvent(request)
+        );
 
         return userMapper.toBaseUserInfoDto(user);
     }

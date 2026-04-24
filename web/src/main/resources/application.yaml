@@ -52,12 +52,20 @@ logging:
     org.hibernate.SQL: DEBUG
     com.example.studentportalspring.controller: DEBUG
 
+order:
+  service:
+    base-url: http://localhost:8080/agro-trade-service
+    order-path: /api/v1/order/
 
 client:
   chat-service:
     url: http://localhost:8081
-  notification:
+    create-chat-path: /chat-service/api/v1/chats
+
+  notification-service:
     url: http://localhost:8082
+    send-settings-path: /notification-service/api/v1/notifications/settings/save
+    send-path: /notification-service/api/v1/notifications/send
 
 rest:
   connect-timeout: 5000

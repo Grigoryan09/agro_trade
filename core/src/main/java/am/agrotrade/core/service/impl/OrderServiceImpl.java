@@ -5,10 +5,9 @@ import am.agrotrade.common.dto.order.request.CreateOrderRequest;
 import am.agrotrade.common.dto.order.request.UpdateOrderStatusRequest;
 import am.agrotrade.common.enums.OrderStatus;
 import am.agrotrade.common.enums.Role;
-import am.agrotrade.common.event.ChatCreatedEvent;
-import am.agrotrade.common.event.NotificationOrderCreatedEvent;
 import am.agrotrade.core.exception.InvalidOrderDataException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
+import am.agrotrade.core.mapper.IntegrationEventMapper;
 import am.agrotrade.core.mapper.OrderMapper;
 import am.agrotrade.core.model.Order;
 import am.agrotrade.core.model.Product;
@@ -38,8 +37,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final ApplicationEventPublisher eventPublisher;
-
-    private static final String ORDER_URL = "http://localhost:8080/agro-trade-service/api/v1/order/";
+    private final IntegrationEventMapper integrationEventMapper;
 
     @Override
     @Transactional
@@ -71,27 +69,25 @@ public class OrderServiceImpl implements OrderService {
                 request.quantity(), totalPrice
         );
 
-        Order saved = orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
 
-        eventPublisher.publishEvent(
-                new ChatCreatedEvent(
-                        saved.getId(),
+        eventPublisher.publishEvent(integrationEventMapper.toChatCreatedEvent(
+                        savedOrder.getId(),
                         buyer.getId(),
                         seller.getId(),
                         manager.getId()
                 )
         );
 
-        eventPublisher.publishEvent(
-                new NotificationOrderCreatedEvent(
-                        seller.getId(),
-                        manager.getId(),
-                        product.getName(),
-                        ORDER_URL + saved.getId()
+        eventPublisher.publishEvent(integrationEventMapper.toNotificationOrderCreatedEvent(
+                savedOrder.getId(),
+                seller.getId(),
+                manager.getId(),
+                product.getName()
                 )
         );
 
-        return orderMapper.toDto(saved);
+        return orderMapper.toDto(savedOrder);
     }
 
     @Override
@@ -103,6 +99,16 @@ public class OrderServiceImpl implements OrderService {
                 ));
         orderMapper.updateOrderFromRequest(request, order);
         return orderMapper.toDto(order);
+    }
+
+    @Override
+    public void attachChatToOrder(long orderId, long chatId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Order not found for ID: %d ".formatted(orderId)
+                ));
+        order.setChatId(chatId);
+        order.setOrderStatus(OrderStatus.PROCESSING);
     }
 
     @Override

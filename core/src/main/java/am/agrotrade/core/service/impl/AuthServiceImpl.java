@@ -9,8 +9,6 @@ import am.agrotrade.common.dto.user.VerifyDto;
 import am.agrotrade.common.dto.user.request.LoginRequest;
 import am.agrotrade.common.dto.user.request.RegisterRequest;
 import am.agrotrade.common.enums.Role;
-import am.agrotrade.common.event.UserRegisteredEvent;
-import am.agrotrade.common.event.VerificationCodeResentEvent;
 import am.agrotrade.core.exception.InvalidCredentialsException;
 import am.agrotrade.core.exception.InvalidVerificationCodeException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
@@ -18,6 +16,7 @@ import am.agrotrade.core.exception.UserAlreadyExistsException;
 import am.agrotrade.core.exception.UserAlreadyVerifiedException;
 import am.agrotrade.core.exception.UserNotVerifiedException;
 import am.agrotrade.core.exception.VerificationCodeExpiredException;
+import am.agrotrade.core.mapper.IntegrationEventMapper;
 import am.agrotrade.core.mapper.UserMapper;
 import am.agrotrade.core.model.RefreshToken;
 import am.agrotrade.core.model.User;
@@ -51,6 +50,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
+    private final IntegrationEventMapper integrationEventMapper;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
@@ -72,14 +72,7 @@ public class AuthServiceImpl implements AuthService {
 
         User savedUser = userRepository.save(user);
 
-        eventPublisher.publishEvent(new UserRegisteredEvent(
-                savedUser.getId(),
-                savedUser.getEmail(),
-                savedUser.getVerificationCode(),
-                request.emailEnabled(),
-                request.smsEnabled(),
-                request.inAppEnabled()
-        ));
+        eventPublisher.publishEvent(integrationEventMapper.toEvent(savedUser,request));
 
         return new RegisterDto(
                 true,
@@ -125,10 +118,7 @@ public class AuthServiceImpl implements AuthService {
 
         setNewVerificationCode(user);
 
-        eventPublisher.publishEvent(new VerificationCodeResentEvent(
-                user.getId(),
-                user.getVerificationCode()
-        ));
+        eventPublisher.publishEvent(integrationEventMapper.toVerificationResentEvent(user));
 
         return new ResendCodeDto(
                 "New verification code has been sent to your email",
