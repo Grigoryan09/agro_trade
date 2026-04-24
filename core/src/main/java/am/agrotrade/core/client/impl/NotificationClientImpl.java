@@ -1,7 +1,9 @@
 package am.agrotrade.core.client.impl;
 
-import am.agrotrade.common.dto.request.SendNotificationRequest;
+import am.agrotrade.common.dto.request.OrderNotificationRequest;
 import am.agrotrade.common.dto.request.SendNotificationSettingsRequest;
+import am.agrotrade.common.dto.request.VerifyNotificationRequest;
+import am.agrotrade.common.dto.request.WelcomeNotificationRequest;
 import am.agrotrade.core.client.NotificationClient;
 import am.agrotrade.core.exception.NotificationException;
 import am.agrotrade.core.properties.NotificationProperties;
@@ -54,7 +56,17 @@ public class NotificationClientImpl implements NotificationClient {
     }
 
     @Override
-    public void sendNotification(SendNotificationRequest request) {
-        send(properties.sendPath(), request);
+    public void sendVerifyEmail(VerifyNotificationRequest request) {
+        send(properties.sendVerifyPath(), request);
+    }
+
+    @Override
+    public void sendOrderOpenedEmail(OrderNotificationRequest request) {
+        send(properties.sendOrderOpenedPath(), request);
+    }
+
+    @Override
+    public void sendWelcomeEmail(WelcomeNotificationRequest request) {
+        send(properties.sendWelcomePath(), request);
     }
 }

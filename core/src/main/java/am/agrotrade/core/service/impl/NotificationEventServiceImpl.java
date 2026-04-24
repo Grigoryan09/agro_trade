@@ -23,18 +23,18 @@ public class NotificationEventServiceImpl implements NotificationEventService {
                 integrationEventMapper.toSettings(event)
         );
 
-        notificationClient.sendNotification(
+        notificationClient.sendVerifyEmail(
                 integrationEventMapper.toVerify(event));
     }
 
     @Override
     public void handleVerificationCodeResent(VerificationCodeResentEvent event) {
-        notificationClient.sendNotification(integrationEventMapper.toVerify(event));
+        notificationClient.sendVerifyEmail(integrationEventMapper.toVerify(event));
     }
 
     @Override
     public void handleOrderCreated(NotificationOrderCreatedEvent event) {
-        notificationClient.sendNotification(
+        notificationClient.sendOrderOpenedEmail(
                 integrationEventMapper.toOrder(event)
         );
     }

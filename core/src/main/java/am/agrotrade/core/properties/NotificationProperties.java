@@ -6,5 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record NotificationProperties(
         String url,
         String sendSettingsPath,
-        String sendPath
+        String sendVerifyPath,
+        String sendOrderOpenedPath,
+        String sendWelcomePath
 ) {}

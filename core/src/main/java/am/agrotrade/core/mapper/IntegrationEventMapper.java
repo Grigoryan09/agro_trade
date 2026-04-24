@@ -1,12 +1,13 @@
 package am.agrotrade.core.mapper;
 
 import am.agrotrade.common.dto.NotificationSettingsDTO;
-import am.agrotrade.common.dto.OrderOpenedDto;
-import am.agrotrade.common.dto.request.SendNotificationRequest;
+import am.agrotrade.common.dto.request.OrderNotificationRequest;
+import am.agrotrade.common.dto.request.OrderOpenedDto;
 import am.agrotrade.common.dto.request.SendNotificationSettingsRequest;
+import am.agrotrade.common.dto.request.VerifyNotificationRequest;
+import am.agrotrade.common.dto.request.WelcomeNotificationRequest;
 import am.agrotrade.common.dto.user.request.RegisterRequest;
 import am.agrotrade.common.dto.user.request.UpdateUserRequest;
-import am.agrotrade.common.enums.EmailType;
 import am.agrotrade.common.event.ChatCreatedEvent;
 import am.agrotrade.common.event.NotificationOrderCreatedEvent;
 import am.agrotrade.common.event.UserNotificationSettingsUpdatedEvent;
@@ -17,8 +18,6 @@ import am.agrotrade.core.properties.OrderServiceProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -44,31 +43,34 @@ public class IntegrationEventMapper {
         );
     }
 
-    public SendNotificationRequest toVerify(UserRegisteredEvent event) {
-        return SendNotificationRequest.builder()
-                .userIds(List.of(event.userId()))
-                .code(event.verificationCode())
-                .emailType(EmailType.VERIFY)
-                .build();
+    public VerifyNotificationRequest toVerify(UserRegisteredEvent event) {
+        return new VerifyNotificationRequest(
+                event.userId(),
+                event.verificationCode()
+        );
     }
 
-    public SendNotificationRequest toOrder(NotificationOrderCreatedEvent event) {
-        return SendNotificationRequest.builder()
-                .userIds(List.of(event.managerId(), event.sellerId()))
-                .emailType(EmailType.ORDER_OPENED)
-                .orderOpenedDto(OrderOpenedDto.builder()
-                        .orderUrl(event.orderUrl())
-                        .productName(event.productName())
-                        .build())
-                .build();
+    public OrderNotificationRequest toOrder(NotificationOrderCreatedEvent event) {
+        return new OrderNotificationRequest(
+                java.util.List.of(event.managerId(), event.sellerId()),
+                new OrderOpenedDto(
+                        event.orderUrl(),
+                        event.productName()
+                )
+        );
     }
 
-    public SendNotificationRequest toVerify(VerificationCodeResentEvent event) {
-        return SendNotificationRequest.builder()
-                .userIds(List.of(event.userId()))
-                .code(event.verificationCode())
-                .emailType(EmailType.VERIFY)
-                .build();
+    public VerifyNotificationRequest toVerify(VerificationCodeResentEvent event) {
+        return new VerifyNotificationRequest(
+                event.userId(),
+                event.verificationCode()
+        );
+    }
+
+    public WelcomeNotificationRequest toWelcome(UserRegisteredEvent event) {
+        return new WelcomeNotificationRequest(
+                event.userId()
+        );
     }
 
     public ChatCreatedEvent toChatCreatedEvent(

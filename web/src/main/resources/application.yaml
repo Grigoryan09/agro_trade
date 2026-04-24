@@ -65,7 +65,9 @@ client:
   notification-service:
     url: http://localhost:8082
     send-settings-path: /notification-service/api/v1/notifications/settings/save
-    send-path: /notification-service/api/v1/notifications/send
+    send-verify-path: /notification-service/api/v1/notifications/send/verify
+    send-order-opened-path: /notification-service/api/v1/notifications/send/order-opened
+    send-welcome-path: /notification-service/api/v1/notifications/send/welcome
 
 rest:
   connect-timeout: 5000

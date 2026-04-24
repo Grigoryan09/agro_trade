@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EntityScan(basePackages = "am.agrotrade.core.model")
 @EnableJpaRepositories(basePackages = (("am.agrotrade.core.repository")))
 @SpringBootApplication
-@ConfigurationPropertiesScan(basePackages = "am.agrotrade.core")
+@ConfigurationPropertiesScan(basePackages = "am.agrotrade.core.properties")
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 @EnableAsync
 public class WebApplication {
