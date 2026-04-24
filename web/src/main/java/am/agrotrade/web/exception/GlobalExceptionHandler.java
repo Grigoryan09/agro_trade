@@ -13,7 +13,7 @@ import am.agrotrade.core.exception.InvalidPasswordException;
 import am.agrotrade.core.exception.InvalidRefreshTokenException;
 import am.agrotrade.core.exception.InvalidUserRoleException;
 import am.agrotrade.core.exception.InvalidVerificationCodeException;
-import am.agrotrade.core.exception.NotificationException;
+import am.agrotrade.core.exception.NotificationRetryableException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.exception.UserAlreadyExistsException;
 import am.agrotrade.core.exception.UserAlreadyVerifiedException;
@@ -253,8 +253,8 @@ public class GlobalExceptionHandler {
 //        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 //    }
 
-    @ExceptionHandler(NotificationException.class)
-    public ResponseEntity<ErrorResponse> handleNotificationException(NotificationException ex) {
+    @ExceptionHandler(NotificationRetryableException.class)
+    public ResponseEntity<ErrorResponse> handleNotificationException(NotificationRetryableException ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.SERVICE_UNAVAILABLE.value(),
                 ex.getMessage(),
