@@ -60,10 +60,21 @@ public class ChatClientImpl implements ChatClient {
                 ChatResponse.class
         );
 
+        if (!responseEntity.getStatusCode().is2xxSuccessful()) {
+            throw new ChatCreationException(
+                    "Chat service returned bad status: %s"
+                            .formatted(responseEntity.getStatusCode())
+            );
+        }
+
         ChatResponse response = responseEntity.getBody();
 
-        if (response == null || response.chatDetailDto() == null) {
-            throw new ChatCreationException("Chat service returned empty response");
+        if (response == null) {
+            throw new ChatCreationException("Chat service returned empty body");
+        }
+
+        if (response.chatDetailDto() == null) {
+            throw new ChatCreationException("Chat detail is missing in response");
         }
         return response.chatDetailDto();
     }

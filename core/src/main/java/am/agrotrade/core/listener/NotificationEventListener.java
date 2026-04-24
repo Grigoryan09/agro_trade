@@ -1,11 +1,9 @@
 package am.agrotrade.core.listener;
 
-import am.agrotrade.common.event.ChatCreatedEvent;
 import am.agrotrade.common.event.NotificationOrderCreatedEvent;
 import am.agrotrade.common.event.UserNotificationSettingsUpdatedEvent;
 import am.agrotrade.common.event.UserRegisteredEvent;
 import am.agrotrade.common.event.VerificationCodeResentEvent;
-import am.agrotrade.core.service.ChatEventService;
 import am.agrotrade.core.service.NotificationEventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -16,15 +14,9 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
-public class IntegrationEventListener {
+public class NotificationEventListener {
 
-    private final ChatEventService chatEventService;
     private final NotificationEventService notificationEventService;
-
-    @EventListener
-    public void handleChatCreatedEvent(ChatCreatedEvent event) {
-        chatEventService.createChatForOrder(event);
-    }
 
     @EventListener
     @Async
@@ -44,8 +36,7 @@ public class IntegrationEventListener {
     }
 
     @EventListener
-    public void handUpdateUserNotificationSettings(UserNotificationSettingsUpdatedEvent event) {
+    public void handleUserNotificationSettingsUpdated(UserNotificationSettingsUpdatedEvent event) {
         notificationEventService.handleUserNotificationSettingsUpdated(event);
     }
-
 }
