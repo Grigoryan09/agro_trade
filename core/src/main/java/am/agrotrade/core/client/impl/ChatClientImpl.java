@@ -82,8 +82,10 @@ public class ChatClientImpl implements ChatClient {
     @Recover
     public ChatDetailDto recover(Exception ex, Long buyerId, Long sellerId, Long managerId) {
         log.error(
-                "Chat creation failed after retries. buyerId=%d, sellerId=%d, managerId=%d"
-                        .formatted(buyerId, sellerId, managerId),
+                "Chat creation failed after retries. buyerId={}, sellerId={}, managerId={}",
+                buyerId,
+                sellerId,
+                managerId,
                 ex
         );
         throw new ChatCreationException(
