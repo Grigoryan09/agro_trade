@@ -79,12 +79,4 @@ public interface AuthService {
      * @return user list
      */
     List<BaseUserInfoDto> findAll(Pageable pageable);
-
-    /**
-     * Returns a user identifier by role name.
-     *
-     * @param role role name
-     * @return user identifier
-     */
-    long findUserIdByRole(String role);
 }

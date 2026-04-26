@@ -1,5 +1,6 @@
 package am.agrotrade.core.repository;
 
+import am.agrotrade.common.enums.Role;
 import am.agrotrade.core.model.User;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 WHERE r = :role
                 ORDER BY u.activeOrdersCount ASC
             """)
-    List<User> findCandidatesForUpdate(@Param("role") String role, Pageable pageable);
+    List<User> findCandidatesForUpdate(@Param("role") Role role, Pageable pageable);
 
     @Modifying
     @Query("""

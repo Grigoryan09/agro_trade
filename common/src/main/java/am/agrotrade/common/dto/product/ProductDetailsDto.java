@@ -5,6 +5,5 @@ public record ProductDetailsDto(
 
         String productName,
         String productType
-
 ) {
 }

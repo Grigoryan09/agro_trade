@@ -31,6 +31,14 @@ public interface OrderService {
     OrderDetailsDto updateStatus(long managerId, UpdateOrderStatusRequest request);
 
     /**
+     * Links an existing chat to the specified order.
+     *
+     * @param orderId order identifier
+     * @param chatId chat identifier
+     */
+    void attachChatToOrder(long orderId, long chatId);
+
+    /**
      * Deletes an order available to the specified manager.
      *
      * @param managerId manager identifier
