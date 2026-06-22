@@ -16,6 +16,4 @@
     <include file="/db/changelog/010-create-document-table.xml"/>
     <include file="/db/changelog/011-create-user_roles-table.xml"/>
     <include file="/db/changelog/012-create-refresh-token-table.xml"/>
-    <include file="/db/changelog/013-add-active-orders-count-to-user.xml"/>
-
 </databaseChangeLog>

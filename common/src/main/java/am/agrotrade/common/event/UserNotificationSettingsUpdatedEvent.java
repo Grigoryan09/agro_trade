@@ -1,7 +1,7 @@
 package am.agrotrade.common.event;
 
-import am.agrotrade.common.dto.NotificationSettingsDTO;
+import am.agrotrade.common.dto.NotificationSettingsEvent;
 
 public record UserNotificationSettingsUpdatedEvent(
-        NotificationSettingsDTO notificationSettingsDTO
+        NotificationSettingsEvent notificationSettingsEvent
 ) {}

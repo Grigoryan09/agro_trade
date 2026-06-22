@@ -1,6 +1,6 @@
 package am.agrotrade.common.dto.user.request;
 
-import am.agrotrade.common.dto.NotificationSettingsDTO;
+import am.agrotrade.common.dto.NotificationSettingsEvent;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
@@ -29,7 +29,7 @@ public record UpdateUserRequest(
         String phoneNumber,
 
         @Valid
-        NotificationSettingsDTO notificationSettingsDTO
+        NotificationSettingsEvent notificationSettingsEvent
 
 ) {
 }

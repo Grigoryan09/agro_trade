@@ -1,18 +1,15 @@
 package am.agrotrade.core.mapper;
 
-import am.agrotrade.common.dto.NotificationSettingsDTO;
-import am.agrotrade.common.dto.request.OrderNotificationRequest;
-import am.agrotrade.common.dto.request.OrderOpenedDto;
-import am.agrotrade.common.dto.request.SendNotificationSettingsRequest;
-import am.agrotrade.common.dto.request.VerifyNotificationRequest;
-import am.agrotrade.common.dto.request.WelcomeNotificationRequest;
-import am.agrotrade.common.dto.user.request.RegisterRequest;
-import am.agrotrade.common.dto.user.request.UpdateUserRequest;
+import am.agrotrade.common.dto.EmailNotificationEvent;
+import am.agrotrade.common.dto.NotificationSettingsEvent;
+import am.agrotrade.common.enums.EmailType;
 import am.agrotrade.common.event.ChatCreatedEvent;
 import am.agrotrade.common.event.NotificationOrderCreatedEvent;
 import am.agrotrade.common.event.UserNotificationSettingsUpdatedEvent;
 import am.agrotrade.common.event.UserRegisteredEvent;
 import am.agrotrade.common.event.VerificationCodeResentEvent;
+import am.agrotrade.common.dto.user.request.RegisterRequest;
+import am.agrotrade.common.dto.user.request.UpdateUserRequest;
 import am.agrotrade.core.model.User;
 import am.agrotrade.core.properties.OrderServiceProperties;
 import lombok.RequiredArgsConstructor;
@@ -25,51 +22,64 @@ public class IntegrationEventMapper {
 
     private final OrderServiceProperties properties;
 
-    public SendNotificationSettingsRequest toSettings(UserRegisteredEvent event) {
-        return new SendNotificationSettingsRequest(
-                NotificationSettingsDTO.builder()
-                        .userId(event.userId())
-                        .email(event.email())
-                        .emailEnabled(event.emailEnabled())
-                        .smsEnabled(event.smsEnabled())
-                        .inAppEnabled(event.inAppEnabled())
-                        .build()
-        );
-    }
-
-    public SendNotificationSettingsRequest toSettingsUpdate(UserNotificationSettingsUpdatedEvent event) {
-        return new SendNotificationSettingsRequest(
-                event.notificationSettingsDTO()
-        );
-    }
-
-    public VerifyNotificationRequest toVerify(UserRegisteredEvent event) {
-        return new VerifyNotificationRequest(
+    public NotificationSettingsEvent toSettings(UserRegisteredEvent event) {
+        return new NotificationSettingsEvent(
                 event.userId(),
-                event.verificationCode()
+                event.email(),
+                event.emailEnabled(),
+                event.smsEnabled(),
+                event.inAppEnabled()
         );
     }
 
-    public OrderNotificationRequest toOrder(NotificationOrderCreatedEvent event) {
-        return new OrderNotificationRequest(
-                java.util.List.of(event.managerId(), event.sellerId()),
-                new OrderOpenedDto(
-                        event.orderUrl(),
-                        event.productName()
-                )
+    public NotificationSettingsEvent toSettingsUpdate(UserNotificationSettingsUpdatedEvent event) {
+        NotificationSettingsEvent dto = event.notificationSettingsEvent();
+        return new NotificationSettingsEvent(
+                dto.getUserId(),
+                dto.getEmail(),
+                dto.getEmailEnabled(),
+                dto.getSmsEnabled(),
+                dto.getInAppEnabled()
         );
     }
 
-    public VerifyNotificationRequest toVerify(VerificationCodeResentEvent event) {
-        return new VerifyNotificationRequest(
-                event.userId(),
-                event.verificationCode()
+    public EmailNotificationEvent toVerify(UserRegisteredEvent event) {
+        return new EmailNotificationEvent(
+                event.email(),
+                event.verificationCode(),
+                null,
+                null,
+                EmailType.VERIFY
         );
     }
 
-    public WelcomeNotificationRequest toWelcome(UserRegisteredEvent event) {
-        return new WelcomeNotificationRequest(
-                event.userId()
+    public EmailNotificationEvent toVerify(VerificationCodeResentEvent event) {
+        return new EmailNotificationEvent(
+                event.email(),
+                event.verificationCode(),
+                null,
+                null,
+                EmailType.VERIFY
+        );
+    }
+
+    public EmailNotificationEvent toOrder(NotificationOrderCreatedEvent event) {
+        return new EmailNotificationEvent(
+                null,
+                null,
+                event.orderUrl(),
+                event.productName(),
+                EmailType.ORDER_OPENED
+        );
+    }
+
+    public EmailNotificationEvent toWelcome(UserRegisteredEvent event) {
+        return new EmailNotificationEvent(
+                event.email(),
+                null,
+                null,
+                null,
+                EmailType.WELCOME
         );
     }
 
@@ -115,13 +125,14 @@ public class IntegrationEventMapper {
     public VerificationCodeResentEvent toVerificationResentEvent(User user) {
         return new VerificationCodeResentEvent(
                 user.getId(),
-                user.getVerificationCode()
+                user.getVerificationCode(),
+                user.getEmail()
         );
     }
 
     public UserNotificationSettingsUpdatedEvent toNotificationSettingsEvent(UpdateUserRequest request) {
         return new UserNotificationSettingsUpdatedEvent(
-                request.notificationSettingsDTO()
+                request.notificationSettingsEvent()
         );
     }
 
@@ -132,5 +143,4 @@ public class IntegrationEventMapper {
                 .pathSegment(String.valueOf(orderId))
                 .toUriString();
     }
-
 }

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotificationSettingsDTO {
+public class NotificationSettingsEvent {
 
     @NotNull(message = "UserId is required")
     @Positive(message = "UserId must be positive")
@@ -32,5 +32,4 @@ public class NotificationSettingsDTO {
 
     @NotNull(message = "In-app setting is required")
     private Boolean inAppEnabled;
-
 }
