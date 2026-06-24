@@ -1,38 +1,50 @@
 spring:
-  application:
-    name: web
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/agro_trade?currentSchema=agro_trade}
+    driver-class-name: org.postgresql.Driver
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
   jpa:
     show-sql: false
     hibernate:
       ddl-auto: none
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: PostgreSQL
     properties:
       hibernate:
         default_schema: agro_trade
+        liquibase-schema: agro_trade
+    open-in-view: false
   liquibase:
     enabled: true
     change-log: classpath:db/master.xml
   servlet:
     multipart:
       max-file-size: 10MB
+      max-request-size: 10MB
   profiles:
     active:
+  kafka:
+    bootstrap-servers: localhost:9092
+    admin:
+      auto-create: true
+
+kafka:
+  topics:
+    email-notification: email-notification-events
+    notification-settings: notification-settings-events
+
+jwt:
+  secret-key: k8v9x2mP7qL5tR4jH8gF6dS3aZ1xC5vB7nM9pQ2wE4rT6yU8iO0pL3wY6uI9oP2lK4jH8gF6dS3aZ1xC5vB7nM9pQ2wE4rT6yU8iO0pL
+  access-expiration: 900000
+  refresh-expiration: 604800000
 
 server:
   port: 8080
 
-agro_trade:
-  web:
-    upload:
-      image:
-        directory:
-          user: "D:/Project/agro_trade/upload_images/"
-          news:
-          product:
+app:
+  upload:
+    dir: D:\Project\agro_trade\storage
+  base-url: http://localhost:8080
 
 logging:
   file:
@@ -41,8 +53,28 @@ logging:
     rolling policy:
       max-file-size: 10MB
       max-history: 3
-
+      clean-history-on-start: true
   level:
     root: INFO
     org.hibernate.SQL: DEBUG
     com.example.studentportalspring.controller: DEBUG
+
+order:
+  service:
+    base-url: http://localhost:8080/agro-trade-service
+    order-path: /api/v1/order/
+
+client:
+  chat-service:
+    url: http://localhost:8081
+    create-chat-path: /chat-service/api/v1/chats
+  notification-service:
+    url: http://localhost:8082
+    send-settings-path: /notification-service/api/v1/notifications/settings/save
+    send-verify-path: /notification-service/api/v1/notifications/send/verify
+    send-order-opened-path: /notification-service/api/v1/notifications/send/order-opened
+    send-welcome-path: /notification-service/api/v1/notifications/send/welcome
+
+rest:
+  connect-timeout: 5000
+  read-timeout: 10000

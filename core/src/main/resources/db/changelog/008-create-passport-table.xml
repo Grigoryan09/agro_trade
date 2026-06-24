@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-passport-table" author="Grisha">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="agro_trade" tableName="passport"/>
+            </not>
+        </preConditions>
+
+        <createTable schemaName="agro_trade" tableName="passport">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" unique="true"
+                             uniqueConstraintName="passport_user_id_key"/>
+            </column>
+
+            <column name="passport_number" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="issue_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="expiry_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="issued_by" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableSchemaName="agro_trade"
+                baseTableName="passport"
+                baseColumnNames="user_id"
+                constraintName="fk_passport_user"
+                referencedTableSchemaName="agro_trade"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+    </changeSet>
+
+    <changeSet id="passport-table-rollback" author="Grisha Grigoryan">
+        <rollback>
+            <dropTable
+                    tableName="passport"
+                    schemaName="agro_trade"
+                    cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

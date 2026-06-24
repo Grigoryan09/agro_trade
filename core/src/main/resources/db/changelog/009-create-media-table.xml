@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-media-table" author="Vahe Hovhannisyan">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="agro_trade" tableName="media"/>
+            </not>
+        </preConditions>
+
+        <createTable schemaName="agro_trade" tableName="media">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="file_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="file_type" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="file_path" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sub_folder" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="entity_type" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="entity_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="media-table-rollback" author="Vahe Hovhannisyan">
+        <rollback>
+            <dropTable
+                    tableName="media"
+                    schemaName="agro_trade"
+                    cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

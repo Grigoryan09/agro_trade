@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-organization-table" author="Artash Shaghoyan">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="organization" schemaName="agro_trade"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="organization" schemaName="agro_trade">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="license_number" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_number" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseColumnNames="user_id"
+                baseTableName="organization"
+                baseTableSchemaName="agro_trade"
+                constraintName="fk_organization_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                referencedTableSchemaName="agro_trade"
+                onDelete="CASCADE"/>
+
+    </changeSet>
+
+    <changeSet id="organization-table-rollback" author="Artash Shaghoyan">
+        <rollback>
+            <dropTable
+                    tableName="organization"
+                    schemaName="agro_trade"
+                    cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

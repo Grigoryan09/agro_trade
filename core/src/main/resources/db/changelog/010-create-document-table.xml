@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-document-table" author="Artash Shaghoyan">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="agro_trade" tableName="document"/>
+            </not>
+        </preConditions>
+
+        <createTable schemaName="agro_trade" tableName="document">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="document_type" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_format" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_path" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="document-table-rollback" author="Artash Shaghoyan">
+        <rollback>
+            <dropTable
+                    tableName="document"
+                    schemaName="agro_trade"
+                    cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="add-user-document-fkey" author="Artash Shaghoyan">
+        <addForeignKeyConstraint baseTableSchemaName="agro_trade"
+                                 baseTableName="user"
+                                 baseColumnNames="document_id"
+                                 constraintName="fk_user_document"
+                                 referencedTableSchemaName="agro_trade"
+                                 referencedTableName="document"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>
