@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,41 +57,48 @@ public interface NewsV1API {
     @GetMapping("/{id}")
     NewsResponse getById(@Parameter(description = "News identifier", example = "1") @PathVariable long id);
 
-    @Operation(summary = "Create news", description = "Creates a news item for the authenticated user.")
+    @Operation(summary = "Create news",
+            description = "Creates a news item. Requires the OPERATOR or ADMIN authority.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "News created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request body", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
+    @PreAuthorize("hasAnyAuthority('OPERATOR', 'ADMIN')")
     @PostMapping
     NewsResponse createNews(
             @Parameter(hidden = true) @CurrentUserId long authorId,
             @Valid @RequestBody CreateNewsRequest createNewsRequest
     );
 
-    @Operation(summary = "Update news", description = "Updates an existing news item owned by the authenticated user.")
+    @Operation(summary = "Update news",
+            description = "Updates any existing news item. Requires the OPERATOR or ADMIN authority.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "News updated successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request body", content = @Content),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "News not found", content = @Content)
     })
+    @PreAuthorize("hasAnyAuthority('OPERATOR', 'ADMIN')")
     @PutMapping("/{id}")
     NewsResponse updateNews(
-            @Parameter(hidden = true) @CurrentUserId long authorId,
             @Parameter(description = "News identifier", example = "1") @PathVariable long id,
             @Valid @RequestBody CreateNewsRequest request
     );
 
-    @Operation(summary = "Delete news", description = "Deletes a news item owned by the authenticated user.")
+    @Operation(summary = "Delete news",
+            description = "Deletes any news item. Requires the OPERATOR or ADMIN authority.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "News deleted successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "News not found", content = @Content)
     })
+    @PreAuthorize("hasAnyAuthority('OPERATOR', 'ADMIN')")
     @DeleteMapping("/{id}")
     void delete(
-            @Parameter(hidden = true) @CurrentUserId long authorId,
             @Parameter(description = "News identifier", example = "1") @PathVariable long id
     );
 }

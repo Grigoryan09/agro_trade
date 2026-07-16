@@ -19,6 +19,7 @@ public interface NewsMapper {
     News toEntity(CreateNewsRequest request);
 
     @Mapping(target = "user", source = "author")
+    @Mapping(target = "media", ignore = true)
     BaseNewsInfoDto toDto(News news);
 
     List<BaseNewsInfoDto> toDtoList(List<News> newsList);

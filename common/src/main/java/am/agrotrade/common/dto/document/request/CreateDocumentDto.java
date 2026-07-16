@@ -11,6 +11,7 @@ public record CreateDocumentDto(
         String name,
         DocumentFormat format,
         String filePath,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        String base64Content
 ) {
 }

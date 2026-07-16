@@ -8,9 +8,12 @@ import am.agrotrade.common.dto.document.request.CreateDocumentDto;
 public interface DocumentService {
 
     /**
-     * Saves a document.
+     * Persists a document: writes its Base64 content to disk, stores the
+     * {@code Document} metadata and returns a public download URL.
+     * Generic for any document type (contract, order, ...).
      *
-     * @param document document payload
+     * @param document document payload (including Base64 content)
+     * @return public download URL of the stored document
      */
-    void save(CreateDocumentDto document);
+    String save(CreateDocumentDto document);
 }

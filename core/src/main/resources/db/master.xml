@@ -17,4 +17,6 @@
     <include file="/db/changelog/011-create-user_roles-table.xml"/>
     <include file="/db/changelog/012-create-refresh-token-table.xml"/>
     <include file="/db/changelog/013-add-active-orders-count.xml"/>
+    <include file="/db/changelog/014-add-news-columns.xml"/>
+    <include file="/db/changelog/015-drop-news-category-column.xml"/>
 </databaseChangeLog>

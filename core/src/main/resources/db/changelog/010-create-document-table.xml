@@ -53,4 +53,13 @@
                                  referencedColumnNames="id"
                                  onDelete="CASCADE"/>
     </changeSet>
+
+    <changeSet id="drop-document-type-unique" author="Artash Shaghoyan">
+        <preConditions onFail="MARK_RAN">
+            <indexExists schemaName="agro_trade" tableName="document" indexName="document_document_type_key"/>
+        </preConditions>
+        <dropUniqueConstraint schemaName="agro_trade"
+                              tableName="document"
+                              constraintName="document_document_type_key"/>
+    </changeSet>
 </databaseChangeLog>

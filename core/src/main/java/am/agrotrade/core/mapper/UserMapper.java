@@ -2,6 +2,7 @@ package am.agrotrade.core.mapper;
 
 import am.agrotrade.common.dto.user.BaseUserInfoDto;
 import am.agrotrade.common.dto.user.SellerInfoDto;
+import am.agrotrade.common.dto.user.UserForAdminDto;
 import am.agrotrade.common.dto.user.request.ChangePasswordRequest;
 import am.agrotrade.common.dto.user.request.LoginRequest;
 import am.agrotrade.common.dto.user.request.RegisterRequest;
@@ -24,6 +25,8 @@ public interface UserMapper {
     User toEntity(ChangePasswordRequest updateUserRequest);
 
     BaseUserInfoDto toBaseUserInfoDto(User user);
+
+    UserForAdminDto toUserForAdminDto(User user);
 
     @Mapping(source = "id", target = "sellerId")
     @Mapping(source = "name", target = "sellerName")

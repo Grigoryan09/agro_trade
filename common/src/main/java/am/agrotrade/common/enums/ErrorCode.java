@@ -21,6 +21,8 @@ public enum ErrorCode {
 
     PASSPORT_ALREADY,
 
+    PASSPORT_REQUIRED,
+
     IMAGE_UPLOAD_FAILED,
 
     PRICE_NULL,

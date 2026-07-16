@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="add-category-image-published-to-news" author="Grisha Grigoryan">
+        <addColumn tableName="news" schemaName="agro_trade">
+            <column name="category" type="varchar(50)"/>
+            <column name="image_url" type="varchar(255)"/>
+            <column name="published_at" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

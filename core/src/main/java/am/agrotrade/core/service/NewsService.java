@@ -21,22 +21,20 @@ public interface NewsService {
     BaseNewsInfoDto save(long authorId, CreateNewsRequest request);
 
     /**
-     * Updates an existing news item.
+     * Updates an existing news item, regardless of its author.
      *
-     * @param authorId author identifier
      * @param newsId news identifier
      * @param request updated news payload
      * @return updated news data
      */
-    BaseNewsInfoDto updateNews(long authorId, long newsId, CreateNewsRequest request);
+    BaseNewsInfoDto updateNews(long newsId, CreateNewsRequest request);
 
     /**
-     * Deletes a news item owned by the specified user.
+     * Deletes a news item, regardless of its author.
      *
-     * @param userId owner identifier
      * @param newsId news identifier
      */
-    void delete(long userId, long newsId);
+    void delete(long newsId);
 
     /**
      * Returns all news entries using the provided paging settings.
