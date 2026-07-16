@@ -1,0 +1,19 @@
+# Build output
+target/
+*.class
+
+# IDE
+.idea/
+*.iml
+
+# Node / Angular frontend
+node_modules/
+my-app/dist/
+my-app/.angular/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

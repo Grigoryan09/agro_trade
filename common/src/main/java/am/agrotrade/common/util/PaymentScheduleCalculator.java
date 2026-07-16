@@ -12,17 +12,25 @@ import java.util.List;
 public class PaymentScheduleCalculator {
 
     public static List<PaymentRowDto> calculateSchedule(DocumentGenerateRequest request) {
+        return calculateSchedule(
+                request.finalContractDto().approvedAmount(),
+                request.offerDto().interestRate(),
+                request.finalContractDto().approvedPeriod()
+        );
+    }
 
-        BigDecimal monthlyRate = request.offerDto().interestRate()
+    public static List<PaymentRowDto> calculateSchedule(BigDecimal amount, BigDecimal yearlyRate, int months) {
+
+        BigDecimal monthlyRate = yearlyRate
                 .divide(BigDecimal.valueOf(100))
                 .divide(BigDecimal.valueOf(12), MathContext.DECIMAL64);
 
-        BigDecimal monthlyPayment = calculateMonthlyPayment(request.finalContractDto().approvedAmount(), request.offerDto().interestRate(), request.finalContractDto().approvedPeriod());
+        BigDecimal monthlyPayment = calculateMonthlyPayment(amount, yearlyRate, months);
 
-        BigDecimal balance = request.finalContractDto().approvedAmount();
+        BigDecimal balance = amount;
         List<PaymentRowDto> schedule = new ArrayList<>();
 
-        for (int month = 1; month <= request.finalContractDto().approvedPeriod(); month++) {
+        for (int month = 1; month <= months; month++) {
 
             BigDecimal interest = balance.multiply(monthlyRate);
 

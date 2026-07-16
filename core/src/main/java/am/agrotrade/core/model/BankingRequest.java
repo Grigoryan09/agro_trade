@@ -53,5 +53,4 @@ public class BankingRequest {
     @Enumerated(EnumType.STRING)
     private RepaymentType repaymentType;
 
-
 }
