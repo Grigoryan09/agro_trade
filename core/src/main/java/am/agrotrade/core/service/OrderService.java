@@ -1,5 +1,6 @@
 package am.agrotrade.core.service;
 
+import am.agrotrade.common.dto.document.OrderDocumentGenerateRequest;
 import am.agrotrade.common.dto.order.OrderDetailsDto;
 import am.agrotrade.common.dto.order.request.CreateOrderRequest;
 import am.agrotrade.common.dto.order.request.UpdateOrderStatusRequest;
@@ -70,4 +71,13 @@ public interface OrderService {
      * @return manager order list
      */
     List<OrderDetailsDto> findByManagerId(long managerId, Pageable pageable);
+
+    /**
+     * Collects the data required to generate the order document for the order
+     * linked to the given chat.
+     *
+     * @param chatId chat identifier
+     * @return order document generation request
+     */
+    OrderDocumentGenerateRequest buildOrderDocumentRequest(long chatId);
 }

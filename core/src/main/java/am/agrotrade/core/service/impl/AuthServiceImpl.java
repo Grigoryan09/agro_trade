@@ -152,6 +152,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public RefreshTokenDto refresh(String refreshTokenStr) {
         RefreshToken newRefreshToken = refreshTokenService.verifyAndRotate(refreshTokenStr);
 

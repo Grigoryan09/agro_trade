@@ -26,6 +26,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findAllBySellerId(Long sellerId, Pageable pageable);
 
+    Page<Product> findAllBySellerIdAndStatusNot(Long sellerId, ProductStatus status, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"seller", "seller.organization"})
     Page<Product> findAllByStatusNot(ProductStatus status, Pageable pageable);
 
     boolean existsByIdAndSellerId(Long productId, Long sellerId);

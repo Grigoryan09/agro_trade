@@ -2,7 +2,9 @@ package am.agrotrade.web.endpoint.impl;
 
 import am.agrotrade.common.dto.product.request.CreateProductRequest;
 import am.agrotrade.common.dto.product.request.UpdateProductRequest;
+import am.agrotrade.common.dto.product.response.ProductCategoryResponse;
 import am.agrotrade.common.dto.product.response.ProductInfoResponse;
+import am.agrotrade.common.enums.CategoryProduct;
 import am.agrotrade.core.service.ProductService;
 import am.agrotrade.web.endpoint.ProductV1API;
 import am.agrotrade.web.infrastructure.annotation.CurrentUserId;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,7 +24,16 @@ public class ProductV1Endpoint implements ProductV1API {
 
     @Override
     public ProductInfoResponse getAll(Pageable pageable) {
-        return new ProductInfoResponse(productService.findAll(pageable));
+        return new ProductInfoResponse(productService.findAllByStatusNot(pageable));
+    }
+
+    @Override
+    public ProductCategoryResponse getCategories() {
+        return new ProductCategoryResponse(
+                Arrays.stream(CategoryProduct.values())
+                        .map(Enum::name)
+                        .toList()
+        );
     }
 
     @Override

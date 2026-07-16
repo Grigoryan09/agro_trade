@@ -18,9 +18,10 @@ public interface MediaService {
      * @param files files to store
      * @param entityId target entity identifier
      * @param entityType target entity type
+     * @param userId identifier of the user performing the upload
      * @return stored media metadata
      */
-    List<MediaDto> saveMultipleMedia(List<MultipartFile> files, long entityId, EntityType entityType);
+    List<MediaDto> saveMultipleMedia(List<MultipartFile> files, long entityId, EntityType entityType, long userId);
 
     /**
      * Loads media content for the specified entity as a resource.

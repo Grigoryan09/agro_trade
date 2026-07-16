@@ -2,6 +2,7 @@ package am.agrotrade.web.endpoint;
 
 import am.agrotrade.common.dto.product.request.CreateProductRequest;
 import am.agrotrade.common.dto.product.request.UpdateProductRequest;
+import am.agrotrade.common.dto.product.response.ProductCategoryResponse;
 import am.agrotrade.common.dto.product.response.ProductInfoResponse;
 import am.agrotrade.web.infrastructure.annotation.CurrentUserId;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +38,14 @@ public interface ProductV1API {
     })
     @GetMapping
     ProductInfoResponse getAll(@ParameterObject Pageable pageable);
+
+    @Operation(summary = "List product categories", description = "Returns all available product category values.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Categories retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    })
+    @GetMapping("/categories")
+    ProductCategoryResponse getCategories();
 
     @Operation(summary = "List my products", description = "Returns products created by the authenticated seller.")
     @ApiResponses({
@@ -63,8 +73,10 @@ public interface ProductV1API {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Product created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request body", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
+    @PreAuthorize("hasAnyAuthority('SELLER', 'ADMIN')")
     @PostMapping
     ProductInfoResponse create(
             @Parameter(hidden = true) @CurrentUserId long sellerId,
@@ -76,8 +88,10 @@ public interface ProductV1API {
             @ApiResponse(responseCode = "200", description = "Product updated successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request body", content = @Content),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
     })
+    @PreAuthorize("hasAnyAuthority('SELLER', 'ADMIN')")
     @PutMapping("/{id}")
     ProductInfoResponse update(
             @Parameter(hidden = true) @CurrentUserId long sellerId,
@@ -89,8 +103,10 @@ public interface ProductV1API {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Product deleted successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
     })
+    @PreAuthorize("hasAnyAuthority('SELLER', 'ADMIN')")
     @DeleteMapping("/{id}")
     void delete(
             @Parameter(hidden = true) @CurrentUserId long sellerId,

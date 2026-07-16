@@ -12,12 +12,14 @@ import java.math.BigDecimal;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record OrderDetailsDto(
 
+        long id,
         BuyerDetailsDto buyerDetailsDto,
         SellerDetailsDto sellerDetailsDto,
         ManagerDetailsDto managerDetailsDto,
         ProductDetailsDto productDetailsDto,
         long quantity,
         BigDecimal totalPrice,
-        OrderStatus orderStatus
+        OrderStatus orderStatus,
+        long chatId
 ) {
 }

@@ -43,6 +43,9 @@ public class AuthV1Endpoint implements AuthV1API {
 
     @Override
     public void logout(UserPrincipal principal) {
+        if (principal == null) {
+            return;
+        }
         authService.logout(principal.user().getId());
     }
 }

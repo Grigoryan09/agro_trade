@@ -2,6 +2,7 @@ package am.agrotrade.web.endpoint;
 
 import am.agrotrade.common.dto.media.response.MediaResponse;
 import am.agrotrade.common.enums.EntityType;
+import am.agrotrade.web.infrastructure.annotation.CurrentUserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,10 +28,13 @@ public interface MediaV1API {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Files uploaded successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid upload request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Target entity not found", content = @Content)
     })
     @PostMapping("/{entityType}/{entityId}")
     MediaResponse uploadImages(
+            @Parameter(hidden = true) @CurrentUserId long userId,
             @Parameter(description = "Entity type that will own the uploaded files")
             @PathVariable EntityType entityType,
             @Parameter(description = "Identifier of the target entity", example = "1")

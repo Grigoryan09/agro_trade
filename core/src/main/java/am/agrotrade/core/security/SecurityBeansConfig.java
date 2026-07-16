@@ -1,6 +1,5 @@
 package am.agrotrade.core.security;
 
-import am.agrotrade.core.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityBeansConfig {
 
     private final UserDetailsService userDetailsService;
-    private final JwtService jwtService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -33,10 +31,5 @@ public class SecurityBeansConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) {
         return configuration.getAuthenticationManager();
-    }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthFilter() {
-        return new JwtAuthenticationFilter(jwtService, userDetailsService);
     }
 }

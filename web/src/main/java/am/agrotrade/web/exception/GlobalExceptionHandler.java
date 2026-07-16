@@ -13,7 +13,7 @@ import am.agrotrade.core.exception.InvalidPasswordException;
 import am.agrotrade.core.exception.InvalidRefreshTokenException;
 import am.agrotrade.core.exception.InvalidUserRoleException;
 import am.agrotrade.core.exception.InvalidVerificationCodeException;
-import am.agrotrade.core.exception.NotificationRetryableException;
+import am.agrotrade.core.exception.PassportRequiredException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.exception.UserAlreadyExistsException;
 import am.agrotrade.core.exception.UserAlreadyVerifiedException;
@@ -22,6 +22,7 @@ import am.agrotrade.core.exception.VerificationCodeExpiredException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -154,6 +155,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                ex.getMessage(),
+                ErrorCode.INVALID_USER_ROLE,
+                Instant.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
         ErrorResponse error = new ErrorResponse(
@@ -253,15 +265,15 @@ public class GlobalExceptionHandler {
 //        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 //    }
 
-    @ExceptionHandler(NotificationRetryableException.class)
-    public ResponseEntity<ErrorResponse> handleNotificationException(NotificationRetryableException ex) {
+    @ExceptionHandler(PassportRequiredException.class)
+    public ResponseEntity<ErrorResponse> handlePassportRequired(PassportRequiredException ex) {
         ErrorResponse error = new ErrorResponse(
-                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
-                ErrorCode.SERVICE_UNAVAILABLE,
+                ErrorCode.PASSPORT_REQUIRED,
                 Instant.now()
         );
-        return new ResponseEntity<>(error, HttpStatus.SERVICE_UNAVAILABLE);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

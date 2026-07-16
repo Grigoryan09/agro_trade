@@ -2,17 +2,21 @@ package am.agrotrade.core.service.impl;
 
 import am.agrotrade.common.dto.media.MediaDto;
 import am.agrotrade.common.enums.EntityType;
+import am.agrotrade.common.enums.Role;
 import am.agrotrade.core.exception.ImageUploadException;
 import am.agrotrade.core.exception.InvalidFileException;
 import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.mapper.MediaMapper;
 import am.agrotrade.core.model.Media;
 import am.agrotrade.core.repository.MediaRepository;
+import am.agrotrade.core.repository.ProductRepository;
+import am.agrotrade.core.repository.UserRepository;
 import am.agrotrade.core.service.MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +36,8 @@ public class MediaServiceImpl implements MediaService {
 
     private final MediaRepository mediaRepository;
     private final MediaMapper mediaMapper;
+    private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Value("${app.upload.dir}")
     private String uploadDir;
@@ -49,13 +55,44 @@ public class MediaServiceImpl implements MediaService {
     }
 
     @Override
-    public List<MediaDto> saveMultipleMedia(List<MultipartFile> files, long entityId, EntityType entityType) {
+    public List<MediaDto> saveMultipleMedia(List<MultipartFile> files, long entityId, EntityType entityType, long userId) {
+        validateUploadAccess(entityId, entityType, userId);
+
         if (files == null || files.isEmpty()) {
             return List.of();
         }
         return files.stream()
                 .map(file -> saveMedia(file, entityId, entityType))
                 .toList();
+    }
+
+    private void validateUploadAccess(long entityId, EntityType entityType, long userId) {
+        if (isAdmin(userId)) {
+            return;
+        }
+
+        switch (entityType) {
+            case PRODUCT -> {
+                if (!productRepository.existsByIdAndSellerId(entityId, userId)) {
+                    throw new AccessDeniedException(
+                            "Product %d does not belong to user %d".formatted(entityId, userId));
+                }
+            }
+            case USER -> {
+                if (entityId != userId) {
+                    throw new AccessDeniedException(
+                            "User %d cannot upload media for user %d".formatted(userId, entityId));
+                }
+            }
+            default -> {
+            }
+        }
+    }
+
+    private boolean isAdmin(long userId) {
+        return userRepository.findById(userId)
+                .map(user -> user.getRoles().contains(Role.ADMIN))
+                .orElse(false);
     }
 
     @Override

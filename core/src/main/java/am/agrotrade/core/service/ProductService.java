@@ -57,14 +57,6 @@ public interface ProductService {
     List<ProductInfoDto> findAllBySeller(long sellerId, Pageable pageable);
 
     /**
-     * Returns all products.
-     *
-     * @param pageable paging parameters
-     * @return product list
-     */
-    List<ProductInfoDto> findAll(Pageable pageable);
-
-    /**
      * Returns a product by identifier.
      *
      * @param productId product identifier

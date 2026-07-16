@@ -64,7 +64,7 @@ public interface OrderV1API {
     })
     @PostMapping
     OrderResponse createOrder(
-            @Parameter(hidden = true) @CurrentUserId long managerId,
+            @Parameter(hidden = true) @CurrentUserId long buyerId,
             @Valid @RequestBody CreateOrderRequest request
     );
 

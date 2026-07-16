@@ -3,6 +3,7 @@ package am.agrotrade.core.service.impl;
 import am.agrotrade.common.dto.product.ProductInfoDto;
 import am.agrotrade.common.dto.product.request.CreateProductRequest;
 import am.agrotrade.common.dto.product.request.UpdateProductRequest;
+import am.agrotrade.common.enums.EntityType;
 import am.agrotrade.common.enums.ProductStatus;
 import am.agrotrade.core.exception.ResourceNotFoundException;
 import am.agrotrade.core.mapper.ProductMapper;
@@ -10,6 +11,7 @@ import am.agrotrade.core.model.Product;
 import am.agrotrade.core.model.User;
 import am.agrotrade.core.repository.ProductRepository;
 import am.agrotrade.core.repository.UserRepository;
+import am.agrotrade.core.service.MediaService;
 import am.agrotrade.core.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,12 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final ProductMapper productMapper;
+    private final MediaService mediaService;
+
+    private ProductInfoDto toDtoWithMedia(Product product) {
+        return productMapper.toDto(product)
+                .withMedia(mediaService.findAllByEntity(product.getId(), EntityType.PRODUCT));
+    }
 
     @Override
     @Transactional
@@ -41,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product savedProduct = productRepository.save(product);
 
-        return productMapper.toDto(savedProduct);
+        return toDtoWithMedia(savedProduct);
     }
 
     @Override
@@ -55,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
 
         productMapper.updateEntityFromRequest(request, product);
 
-        return productMapper.toDto(product);
+        return toDtoWithMedia(product);
     }
 
     @Override
@@ -71,28 +79,22 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductInfoDto> findAllByStatusNot(Pageable pageable) {
         return productRepository.findAllByStatusNot(ProductStatus.DELETED, pageable)
-                .map(productMapper::toDto)
+                .map(this::toDtoWithMedia)
                 .getContent();
     }
 
     @Override
     public List<ProductInfoDto> findAllBySeller(long userId, Pageable pageable) {
-        return productRepository.findAllBySellerId(userId, pageable)
-                .map(productMapper::toDto)
-                .getContent();
-    }
-
-    @Override
-    public List<ProductInfoDto> findAll(Pageable pageable) {
-        return productRepository.findAll(pageable)
-                .map(productMapper::toDto)
+        return productRepository.findAllBySellerIdAndStatusNot(userId, ProductStatus.DELETED, pageable)
+                .map(this::toDtoWithMedia)
                 .getContent();
     }
 
     @Override
     public ProductInfoDto findById(long productId) {
         return productRepository.findById(productId)
-                .map(productMapper::toDto)
+                .filter(product -> product.getStatus() != ProductStatus.DELETED)
+                .map(this::toDtoWithMedia)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Product not found for ID: %d ".formatted(productId)
                 ));

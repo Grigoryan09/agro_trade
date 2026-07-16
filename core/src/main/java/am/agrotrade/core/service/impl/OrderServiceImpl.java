@@ -1,8 +1,14 @@
 package am.agrotrade.core.service.impl;
 
+import am.agrotrade.common.dto.document.BuyerInfoDto;
+import am.agrotrade.common.dto.document.ChatStatusUpdateEvent;
+import am.agrotrade.common.dto.document.ManagerInfoDto;
+import am.agrotrade.common.dto.document.OrderDocumentGenerateRequest;
+import am.agrotrade.common.dto.document.SellerInfoDto;
 import am.agrotrade.common.dto.order.OrderDetailsDto;
 import am.agrotrade.common.dto.order.request.CreateOrderRequest;
 import am.agrotrade.common.dto.order.request.UpdateOrderStatusRequest;
+import am.agrotrade.common.dto.product.ProductDetailsDto;
 import am.agrotrade.common.enums.OrderStatus;
 import am.agrotrade.common.enums.Role;
 import am.agrotrade.core.exception.InvalidOrderDataException;
@@ -25,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -38,6 +45,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final ApplicationEventPublisher eventPublisher;
     private final IntegrationEventMapper integrationEventMapper;
+    private final OrderDocumentIntegrationProducer orderDocumentIntegrationProducer;
 
     @Override
     @Transactional
@@ -98,10 +106,18 @@ public class OrderServiceImpl implements OrderService {
                         "Order not found for ID: %d ".formatted(orderId)
                 ));
         orderMapper.updateOrderFromRequest(request, order);
+
+        if (order.getOrderStatus() == OrderStatus.COMPLETED) {
+            orderDocumentIntegrationProducer.sendChatStatusUpdate(
+                    new ChatStatusUpdateEvent(order.getChatId(), OrderStatus.COMPLETED.name())
+            );
+        }
+
         return orderMapper.toDto(order);
     }
 
     @Override
+    @Transactional
     public void attachChatToOrder(long orderId, long chatId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -142,6 +158,42 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAllByManagerId(managerId, pageable)
                 .map(orderMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public OrderDocumentGenerateRequest buildOrderDocumentRequest(long chatId) {
+        Order order = orderRepository.findByChatId(chatId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Order not found for chat ID: %d ".formatted(chatId)
+                ));
+
+        User buyer = order.getBuyer();
+        User seller = order.getSeller();
+        User manager = order.getManager();
+        Product product = order.getProduct();
+
+        return new OrderDocumentGenerateRequest(
+                order.getId(),
+                LocalDate.now().toString(),
+                new BuyerInfoDto(fullName(buyer), buyer.getAddress(), buyer.getEmail(), buyer.getPhoneNumber()),
+                new SellerInfoDto(fullName(seller), seller.getAddress(), seller.getEmail(), seller.getPhoneNumber()),
+                new ManagerInfoDto(fullName(manager), manager.getAddress(), manager.getEmail(), manager.getPhoneNumber()),
+                new ProductDetailsDto(product.getName(),
+                        product.getCategory() != null ? product.getCategory().name() : ""),
+                order.getQuantity(),
+                order.getTotalPrice() != null ? order.getTotalPrice().toPlainString() : "",
+                order.getChatId(),
+                manager.getId()
+        );
+    }
+
+    private String fullName(User user) {
+        return "%s %s".formatted(safe(user.getName()), safe(user.getSurname())).trim();
+    }
+
+    private String safe(String value) {
+        return value == null ? "" : value;
     }
 
     private BigDecimal calculateTotalPrice(BigDecimal price, long quantity) {
