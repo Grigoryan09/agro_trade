@@ -1,0 +1,96 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/agro_trade?currentSchema=agro_trade}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    database: PostgreSQL
+    properties:
+      hibernate:
+        default_schema: agro_trade
+        liquibase-schema: agro_trade
+    open-in-view: false
+  liquibase:
+    enabled: true
+    change-log: classpath:db/master.xml
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  profiles:
+    active:
+  kafka:
+    bootstrap-servers: localhost:9092
+    admin:
+      auto-create: true
+    consumer:
+      group-id: agro-trade
+      auto-offset-reset: earliest
+
+kafka:
+  topics:
+    email-notification: email-notification-events
+    notification-settings: notification-settings-events
+    document-generate: ${DOCUMENT_CONTRACT_TOPIC:document-generate-events}
+    chat-status-update: chat-status-update-events
+    order-document-request: order-document-request-events
+    order-document-generate: order-document-generate-events
+    order-document-result: order-document-result-events
+    chat-document-message: chat-document-message-events
+    contract-create-request: contract-create-request-events
+    contract-create-result: contract-create-result-events
+    contract-document-generate: contract-document-generate-events
+    contract-document-result: contract-document-result-events
+    contract-status-update: contract-status-update-events
+
+jwt:
+  secret-key: k8v9x2mP7qL5tR4jH8gF6dS3aZ1xC5vB7nM9pQ2wE4rT6yU8iO0pL3wY6uI9oP2lK4jH8gF6dS3aZ1xC5vB7nM9pQ2wE4rT6yU8iO0pL
+  access-expiration: 3600000
+  refresh-expiration: 604800000
+
+server:
+  port: 8080
+
+app:
+  upload:
+    dir: D:\Project\agro_trade\storage
+  base-url: http://localhost:8080
+  swagger:
+    enabled: true
+
+springdoc:
+  api-docs:
+    enabled: ${app.swagger.enabled}
+  swagger-ui:
+    enabled: ${app.swagger.enabled}
+
+logging:
+  file:
+    name: D:/Project/agro_trade/log/agro-trade-web.log
+  logback:
+    rolling policy:
+      max-file-size: 10MB
+      max-history: 3
+      clean-history-on-start: true
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    com.example.studentportalspring.controller: DEBUG
+
+order:
+  service:
+    base-url: http://localhost:8080/agro-trade-service
+    order-path: /api/v1/order/
+
+client:
+  chat-service:
+    url: http://localhost:8081
+    create-chat-path: /chat-service/api/v1/chats
+
+rest:
+  connect-timeout: 5000
+  read-timeout: 10000
