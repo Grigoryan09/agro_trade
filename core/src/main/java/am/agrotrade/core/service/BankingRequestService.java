@@ -1,43 +1,24 @@
 package am.agrotrade.core.service;
 
+import am.agrotrade.common.dto.banking.event.ContractCreateResultEvent;
 import am.agrotrade.common.dto.bankingRequest.request.CreateBankingRequest;
-import am.agrotrade.common.dto.request.Request2Bank;
+import am.agrotrade.common.dto.bankingRequest.response.BankingRequestInfoDto;
+import am.agrotrade.common.dto.document.contract.ContractDocumentGenerateEvent;
+import org.springframework.data.domain.Pageable;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
-/**
- * Handles creation and retrieval of banking requests.
- */
 public interface BankingRequestService {
 
-    /**
-     * Creates a banking request.
-     *
-     * @param bankingRequest request payload
-     */
-    void save(CreateBankingRequest bankingRequest);
+    BankingRequestInfoDto create(long userId, CreateBankingRequest request);
 
-    /**
-     * Deletes a banking request by identifier.
-     *
-     * @param bankingRequestId banking request identifier
-     */
     void delete(long bankingRequestId);
 
-    /**
-     * Returns all banking requests.
-     *
-     * @param pageable paging parameters
-     * @return banking request list
-     */
-    List<Request2Bank> findAll(Pageable pageable);
+    List<BankingRequestInfoDto> findByUserId(long userId, Pageable pageable);
 
-    /**
-     * Returns a banking request by identifier.
-     *
-     * @param bankingRequestId banking request identifier
-     * @return banking request data
-     */
-    Request2Bank findById(long bankingRequestId);
+    BankingRequestInfoDto findById(long bankingRequestId);
+
+    ContractDocumentGenerateEvent onContractCreated(ContractCreateResultEvent event);
+
+    void completeContract(long bankingRequestId);
 }

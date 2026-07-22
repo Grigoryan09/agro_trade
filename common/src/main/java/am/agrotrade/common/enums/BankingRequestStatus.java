@@ -5,4 +5,6 @@ public enum BankingRequestStatus {
     PENDING,
     APPROVED,
     REJECTED,
+    COMPLETED,
+    FAILED
 }
