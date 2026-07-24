@@ -31,6 +31,19 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      # Inter-service call to chat-service by container name (localhost = this
+      # container inside Docker, which is why chat creation was refused).
+      CLIENT_CHATSERVICE_URL: http://chat_service:8081
+      # Public server address — used to build browser-reachable media/document
+      # links and the clickable order link embedded in notification e-mails.
+      APP_BASE_URL: http://18.208.28.153:3000
+      ORDER_SERVICE_BASEURL: http://18.208.28.153:3000/agro-trade-service
+      # Container-local paths (the yaml defaults are Windows paths).
+      APP_UPLOAD_DIR: /app/storage
+      LOGGING_FILE_NAME: /app/log/agro-trade-web.log
+    volumes:
+      - agro_storage:/app/storage
+      - agro_logs:/app/log
 
   kafka:
     image: confluentinc/cp-kafka:7.6.0
@@ -51,3 +64,5 @@ services:
 
 volumes:
   postgres_data:
+  agro_storage:
+  agro_logs:
